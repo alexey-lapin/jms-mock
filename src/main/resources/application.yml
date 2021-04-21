@@ -1,0 +1,8 @@
+server:
+  error:
+    include-message: ALWAYS
+
+spring:
+  datasource:
+    generate-unique-name: false
+  h2.console.enabled: true
