@@ -49,9 +49,8 @@ public class ReceiverConfigService {
 
     @Transactional
     public ReceiverConfig updateReceiver(String name, ReceiverConfig config) {
-        ReceiverConfig existingReceiverConfig = repository.findByName(name).orElseThrow(() -> {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "receiver [name=] does not exist");
-        });
+        ReceiverConfig existingReceiverConfig = repository.findByName(name).orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "receiver [name=] does not exist"));
 
         existingReceiverConfig.setName(config.getName());
         existingReceiverConfig.setParameters(config.getParameters());
@@ -63,9 +62,8 @@ public class ReceiverConfigService {
 
     @Transactional
     public void deleteReceiver(String name) {
-        repository.findByName(name).orElseThrow(() -> {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "receiver [name=] does not exist");
-        });
+        repository.findByName(name).orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "receiver [name=] does not exist"));
 
         // check mock
         boolean isReceiverUser = mockManager.getMocks().values().stream()

@@ -14,11 +14,8 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
-import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
 @AllArgsConstructor
@@ -44,7 +41,8 @@ public class ReceiverConfig implements ParametrizedConfig {
     }
 
     public String getDestination() {
-        return getParameter(PARAM_DESTINATION).orElseThrow();
+        return getParameter(PARAM_DESTINATION)
+                .orElseThrow(() -> new RuntimeException());
     }
 
 }

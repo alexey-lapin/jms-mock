@@ -46,7 +46,8 @@ public class SenderConfig {
     }
 
     public String getDestination() {
-        return getParameter("destination").orElseThrow();
+        return getParameter("destination")
+                .orElseThrow(() -> new RuntimeException());
     }
 
 }

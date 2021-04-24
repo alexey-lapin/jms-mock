@@ -1,11 +1,8 @@
 package jmsmock.service;
 
-import jmsmock.api.dto.SenderConfigDto;
-import jmsmock.domain.ReceiverConfig;
 import jmsmock.domain.SenderConfig;
 import jmsmock.domain.SenderConfigRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.convert.ConversionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,7 +10,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -42,9 +38,8 @@ public class SenderConfigService {
 
     @Transactional
     public SenderConfig updateSender(String name, SenderConfig config) {
-        SenderConfig existingSenderConfig = repository.findByName(name).orElseThrow(() -> {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        });
+        SenderConfig existingSenderConfig = repository.findByName(name).orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         existingSenderConfig.setName(config.getName());
         existingSenderConfig.setParameters(config.getParameters());
@@ -54,9 +49,8 @@ public class SenderConfigService {
 
     @Transactional
     public void deleteSender(String name) {
-        repository.findByName(name).orElseThrow(() -> {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        });
+        repository.findByName(name).orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         repository.deleteByName(name);
     }

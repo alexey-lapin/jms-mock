@@ -47,10 +47,9 @@ public class MockConfigService {
 
     @Transactional
     public MockConfig updateMock(String name, MockConfig config) {
-        MockConfig existingMockConfig = repository.findByName(name).orElseThrow(() -> {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-                    String.format("mock config [name=%s] does not exist", name));
-        });
+        MockConfig existingMockConfig = repository.findByName(name).orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        String.format("mock config [name=%s] does not exist", name)));
 
         validateNodeConfigs(config);
 
@@ -66,10 +65,9 @@ public class MockConfigService {
 
     @Transactional
     public void deleteMock(String name) {
-        MockConfig mockConfig = repository.findByName(name).orElseThrow(() -> {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-                    String.format("mock config [name=%s] does not exist", name));
-        });
+        MockConfig mockConfig = repository.findByName(name).orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        String.format("mock config [name=%s] does not exist", name)));
 
         mockManager.unregisterMock(mockConfig);
 
@@ -77,7 +75,8 @@ public class MockConfigService {
     }
 
     private void validateNodeConfigs(MockConfig mockConfig) {
-        NodeConfig headConfig = mockConfig.getNodes().stream().findFirst().orElseThrow();
+        NodeConfig headConfig = mockConfig.getNodes().stream().findFirst()
+                .orElseThrow(() -> new RuntimeException());
         if (!headConfig.getType().isTrigger()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "first node must be a trigger");
         }
