@@ -23,8 +23,8 @@ public class MockConfigService {
     private final ReceiverConfigService receiverConfigService;
     private final SenderConfigService senderConfigService;
 
-    private final @Lazy
-    MockManager mockManager;
+    @Lazy
+    private final MockManager mockManager;
 
     @Transactional(readOnly = true)
     public List<MockConfig> findAll() {
@@ -77,6 +77,7 @@ public class MockConfigService {
     private void validateNodeConfigs(MockConfig mockConfig) {
         NodeConfig headConfig = mockConfig.getNodes().stream().findFirst()
                 .orElseThrow(() -> new RuntimeException());
+
         if (!headConfig.getType().isTrigger()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "first node must be a trigger");
         }

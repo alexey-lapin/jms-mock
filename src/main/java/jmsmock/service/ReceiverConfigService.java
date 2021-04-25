@@ -70,7 +70,7 @@ public class ReceiverConfigService {
                 .anyMatch(mock -> hasReceiver(mock, name));
 
         if (isReceiverUser) {
-            throw new RuntimeException("receiver is used");
+            throw new RuntimeException("receiver is in use");
         }
 
         repository.deleteByName(name);

@@ -5,11 +5,12 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum NodeType {
 
-    RECEIVER("receiver", true),
-    SENDER("sender", false),
+    COMPOSER("composer", true),
+    DELAY("delay", false),
     GROOVY("groovy", true),
-    MESSAGE_CREATOR("message-creator", true),
-    LOGGER("logger", false);
+    LOGGER("logger", false),
+    RECEIVER("receiver", true),
+    SENDER("sender", false);
 
     private final String name;
 

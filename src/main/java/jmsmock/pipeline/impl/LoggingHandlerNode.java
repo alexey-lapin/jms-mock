@@ -1,5 +1,6 @@
 package jmsmock.pipeline.impl;
 
+import jmsmock.domain.NodeConfig;
 import jmsmock.pipeline.AbstractNode;
 import jmsmock.pipeline.Context;
 import jmsmock.pipeline.Handler;
@@ -8,6 +9,10 @@ import reactor.core.publisher.Flux;
 
 @Slf4j
 public class LoggingHandlerNode extends AbstractNode implements Handler {
+
+    public LoggingHandlerNode(NodeConfig nodeConfig) {
+        super(nodeConfig);
+    }
 
     @Override
     public Flux<Context> handle(Flux<Context> stream) {

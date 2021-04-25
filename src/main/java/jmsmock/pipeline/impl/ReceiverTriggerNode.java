@@ -1,9 +1,9 @@
 package jmsmock.pipeline.impl;
 
+import jmsmock.domain.NodeConfig;
 import jmsmock.pipeline.AbstractNode;
 import jmsmock.pipeline.Context;
 import jmsmock.pipeline.Trigger;
-import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.jms.support.converter.MessageConverter;
 import reactor.core.publisher.Flux;
@@ -12,12 +12,18 @@ import reactor.core.publisher.Sinks;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 
-@RequiredArgsConstructor
-public class ListenerTrigger extends AbstractNode implements Trigger, MessageListener {
+public class ReceiverTriggerNode extends AbstractNode implements Trigger, MessageListener {
+
+    public static final String PARAMETER_RECEIVER_NAME = "receiver-name";
 
     private final Sinks.Many<Context> sink = Sinks.many().unicast().onBackpressureBuffer();
 
     private final MessageConverter messageConverter;
+
+    public ReceiverTriggerNode(NodeConfig nodeConfig, MessageConverter messageConverter) {
+        super(nodeConfig);
+        this.messageConverter = messageConverter;
+    }
 
     @Override
     public Flux<Context> getFlux() {
@@ -37,5 +43,5 @@ public class ListenerTrigger extends AbstractNode implements Trigger, MessageLis
     private org.springframework.messaging.Message<String> convertMessage(Message message) {
         return (org.springframework.messaging.Message<String>) messageConverter.fromMessage(message);
     }
-    
+
 }

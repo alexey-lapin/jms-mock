@@ -2,8 +2,8 @@ package jmsmock.pipeline.factory;
 
 import jmsmock.domain.NodeConfig;
 import jmsmock.domain.ReceiverConfig;
-import jmsmock.pipeline.impl.ListenerTrigger;
 import jmsmock.pipeline.Node;
+import jmsmock.pipeline.impl.ReceiverTriggerNode;
 import jmsmock.service.ReceiverConfigService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jms.config.JmsListenerContainerFactory;
@@ -15,28 +15,25 @@ import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
 @Component
-public class ReceiverNodeFactory implements NodeFactory {
-
-    public static final String PARAMETER_RECEIVER_NAME = "receiver-name";
+public class ReceiverTriggerNodeFactory implements NodeFactory {
 
     private final ReceiverConfigService receiverConfigService;
 
+    private final JmsListenerContainerFactory<?> jmsListenerContainerFactory;
     private final JmsListenerEndpointRegistry jmsListenerEndpointRegistry;
     private final MessageConverter messageConverter;
-    private final JmsListenerContainerFactory<?> jmsListenerContainerFactory;
 
     @Override
     public Node create(NodeConfig nodeConfig) {
-        String receiverName = nodeConfig.getParameter(PARAMETER_RECEIVER_NAME)
-                .orElseThrow(() -> new RuntimeException(PARAMETER_RECEIVER_NAME + " is empty"));
+        String receiverName = nodeConfig.getParameter(ReceiverTriggerNode.PARAMETER_RECEIVER_NAME)
+                .orElseThrow(() -> new RuntimeException(ReceiverTriggerNode.PARAMETER_RECEIVER_NAME + " is required"));
 
         ReceiverConfig receiverConfig = receiverConfigService.findByName(receiverName)
                 .orElseThrow(() -> new RuntimeException(receiverName + " does not exist"));
 
         String destination = receiverConfig.getDestination();
 
-        ListenerTrigger listener = new ListenerTrigger(messageConverter);
-        listener.setNodeConfig(nodeConfig);
+        ReceiverTriggerNode listener = new ReceiverTriggerNode(nodeConfig, messageConverter);
 
         MessageListenerContainer listenerContainer = jmsListenerEndpointRegistry.getListenerContainer(receiverConfig.getName());
         if (listenerContainer == null) {

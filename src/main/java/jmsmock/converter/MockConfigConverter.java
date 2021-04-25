@@ -11,34 +11,31 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Component;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class MockConfigConverter {
 
+    @RequiredArgsConstructor
     @Component
     static class FromDto implements ModelConverter<MockConfigDto, MockConfig> {
 
+        @Lazy
         private final ConversionService conversionService;
-
-        public FromDto(@Lazy ConversionService conversionService) {
-            this.conversionService = conversionService;
-        }
 
         @Override
         public MockConfig convert(MockConfigDto source) {
             List<NodeConfigDto> nodeConfigList = source.getNodes();
-            Set<NodeConfig> nodes = new TreeSet<>();
-            for(int i = 0; i < nodeConfigList.size(); i++) {
+            SortedSet<NodeConfig> nodes = new TreeSet<>();
+            for (int i = 0; i < nodeConfigList.size(); i++) {
                 nodes.add(convertNodeConfig(nodeConfigList.get(i), i));
             }
 
-            MockConfig mockConfig = new MockConfig(UUID.randomUUID(), source.getName(), nodes);
-            return mockConfig;
+            return new MockConfig(UUID.randomUUID(), source.getName(), nodes);
         }
 
         private NodeConfig convertNodeConfig(NodeConfigDto source, int position) {
@@ -55,14 +52,12 @@ public class MockConfigConverter {
         }
     }
 
+    @RequiredArgsConstructor
     @Component
     static class ToDto implements ModelConverter<MockConfig, MockConfigDto> {
 
+        @Lazy
         private final ConversionService conversionService;
-
-        public ToDto(@Lazy ConversionService conversionService) {
-            this.conversionService = conversionService;
-        }
 
         @Override
         public MockConfigDto convert(MockConfig source) {

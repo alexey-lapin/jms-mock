@@ -20,8 +20,8 @@ public class ReceiverConfigConverter {
     @Component
     static class FromDto implements ModelConverter<ReceiverConfigDto, ReceiverConfig> {
 
-        private final @Lazy
-        ConversionService conversionService;
+        @Lazy
+        private final ConversionService conversionService;
 
         @Override
         public ReceiverConfig convert(ReceiverConfigDto source) {
@@ -29,11 +29,7 @@ public class ReceiverConfigConverter {
                     .map(item -> conversionService.convert(item, Parameter.class))
                     .collect(Collectors.toSet());
 
-            ReceiverConfig receiverConfig = new ReceiverConfig(UUID.randomUUID(), source.getName(), parameters);
-//            receiverConfig.setId(UUID.randomUUID());
-//            receiverConfig.setName(source.getName());
-//            receiverConfig.setParameters(parameters);
-            return receiverConfig;
+            return new ReceiverConfig(UUID.randomUUID(), source.getName(), parameters);
         }
     }
 
@@ -41,8 +37,8 @@ public class ReceiverConfigConverter {
     @Component
     static class ToDto implements ModelConverter<ReceiverConfig, ReceiverConfigDto> {
 
-        private final @Lazy
-        ConversionService conversionService;
+        @Lazy
+        private final ConversionService conversionService;
 
         @Override
         public ReceiverConfigDto convert(ReceiverConfig source) {
