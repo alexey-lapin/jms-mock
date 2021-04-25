@@ -1,4 +1,4 @@
-package jmsmock.domain;
+package jmsmock.domain.model;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

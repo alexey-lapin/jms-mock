@@ -1,8 +1,8 @@
 package jmsmock.service;
 
-import jmsmock.domain.MockConfig;
-import jmsmock.domain.NodeConfig;
-import jmsmock.domain.NodeType;
+import jmsmock.domain.model.MockConfig;
+import jmsmock.domain.model.NodeConfig;
+import jmsmock.domain.model.NodeType;
 import jmsmock.mock.Mock;
 import jmsmock.pipeline.Context;
 import jmsmock.pipeline.Node;

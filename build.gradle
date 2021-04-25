@@ -1,5 +1,6 @@
 plugins {
     id("java")
+    id("com.github.ben-manes.versions")
     id("io.spring.dependency-management")
     id("org.springframework.boot")
 }
@@ -19,30 +20,42 @@ dependencies {
     compileOnly("org.projectlombok:lombok")
 
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
+//    implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-web")
+//    implementation("org.springframework.boot:spring-boot-starter-webflux")
 
-    implementation("org.webjars:bootstrap:5.0.0-beta3")
-    implementation("org.webjars.npm:bootstrap-icons:1.4.1")
-
-    implementation("com.ibm.mq:mq-jms-spring-boot-starter:2.3.4")
-
-    implementation("io.projectreactor.netty:reactor-netty-core:1.0.6")
+    implementation("com.ibm.mq:mq-jms-spring-boot-starter:2.4.5")
+    implementation("io.projectreactor:reactor-core:3.4.5")
 
     if (env == "local") {
         runtimeOnly("com.h2database:h2")
     } else {
         runtimeOnly("org.postgresql:postgresql")
     }
-    runtimeOnly("org.liquibase:liquibase-core:3.8.7")
+    runtimeOnly("org.liquibase:liquibase-core:4.3.4")
 
-    runtimeOnly("org.codehaus.groovy:groovy:3.0.7")
+    runtimeOnly("org.codehaus.groovy:groovy:3.0.8")
 
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.6.0")
+//    testImplementation("org.junit.jupiter:junit-jupiter-api:5.6.0")
+//    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
 
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+}
 
+dependencyUpdates {
+    checkConstraints = true
+    resolutionStrategy {
+        componentSelection {
+            all {
+                def rejected = ["alpha", "beta", "rc", "cr", "m", "preview", "b", "ea"]
+                        .collect { qualifier -> /(?i).*[.-]$qualifier[.\\d-+]*/ }
+                        .any { it.matches(candidate.version) }
+                if (rejected) {
+                    reject("Release candidate")
+                }
+            }
+        }
+    }
 }
 
 test {

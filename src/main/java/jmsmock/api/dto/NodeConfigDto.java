@@ -1,6 +1,6 @@
 package jmsmock.api.dto;
 
-import jmsmock.domain.NodeType;
+import jmsmock.domain.model.NodeType;
 import lombok.Builder;
 import lombok.Getter;
 

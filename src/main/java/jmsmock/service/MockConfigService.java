@@ -1,10 +1,10 @@
 package jmsmock.service;
 
-import jmsmock.domain.MockConfig;
-import jmsmock.domain.MockConfigRepository;
-import jmsmock.domain.NodeConfig;
-import jmsmock.domain.NodeType;
-import jmsmock.domain.ParametrizedConfig;
+import jmsmock.domain.model.MockConfig;
+import jmsmock.domain.repository.MockConfigRepository;
+import jmsmock.domain.model.NodeConfig;
+import jmsmock.domain.model.NodeType;
+import jmsmock.domain.repository.ParametrizedConfig;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;

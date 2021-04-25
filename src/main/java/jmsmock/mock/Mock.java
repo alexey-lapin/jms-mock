@@ -1,6 +1,6 @@
 package jmsmock.mock;
 
-import jmsmock.domain.MockConfig;
+import jmsmock.domain.model.MockConfig;
 import jmsmock.pipeline.Context;
 import jmsmock.pipeline.Handler;
 import jmsmock.pipeline.Node;

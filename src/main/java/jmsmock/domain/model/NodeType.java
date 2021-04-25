@@ -1,4 +1,4 @@
-package jmsmock.domain;
+package jmsmock.domain.model;
 
 
 import com.fasterxml.jackson.annotation.JsonValue;

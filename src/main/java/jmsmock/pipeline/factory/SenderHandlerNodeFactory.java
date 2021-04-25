@@ -1,7 +1,7 @@
 package jmsmock.pipeline.factory;
 
-import jmsmock.domain.NodeConfig;
-import jmsmock.domain.SenderConfig;
+import jmsmock.domain.model.NodeConfig;
+import jmsmock.domain.model.SenderConfig;
 import jmsmock.pipeline.Node;
 import jmsmock.pipeline.impl.SenderHandlerNode;
 import jmsmock.service.SenderConfigService;

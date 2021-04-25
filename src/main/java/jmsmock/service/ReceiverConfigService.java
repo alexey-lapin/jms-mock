@@ -1,9 +1,9 @@
 package jmsmock.service;
 
-import jmsmock.domain.NodeConfig;
-import jmsmock.domain.ParametrizedConfig;
-import jmsmock.domain.ReceiverConfig;
-import jmsmock.domain.ReceiverConfigRepository;
+import jmsmock.domain.model.NodeConfig;
+import jmsmock.domain.repository.ParametrizedConfig;
+import jmsmock.domain.model.ReceiverConfig;
+import jmsmock.domain.repository.ReceiverConfigRepository;
 import jmsmock.mock.Mock;
 import jmsmock.pipeline.Node;
 import lombok.RequiredArgsConstructor;

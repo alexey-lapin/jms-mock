@@ -1,7 +1,7 @@
 package jmsmock.pipeline.factory;
 
-import jmsmock.domain.NodeConfig;
-import jmsmock.domain.NodeType;
+import jmsmock.domain.model.NodeConfig;
+import jmsmock.domain.model.NodeType;
 import jmsmock.pipeline.Node;
 import jmsmock.pipeline.impl.ComposerTriggerNode;
 import jmsmock.pipeline.impl.DelayHandlerNode;

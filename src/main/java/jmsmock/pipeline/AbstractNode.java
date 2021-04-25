@@ -1,6 +1,6 @@
 package jmsmock.pipeline;
 
-import jmsmock.domain.NodeConfig;
+import jmsmock.domain.model.NodeConfig;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;

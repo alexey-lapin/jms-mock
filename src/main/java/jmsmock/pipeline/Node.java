@@ -1,6 +1,6 @@
 package jmsmock.pipeline;
 
-import jmsmock.domain.NodeConfig;
+import jmsmock.domain.model.NodeConfig;
 
 public interface Node {
 

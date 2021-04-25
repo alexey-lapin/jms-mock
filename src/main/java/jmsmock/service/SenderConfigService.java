@@ -1,7 +1,7 @@
 package jmsmock.service;
 
-import jmsmock.domain.SenderConfig;
-import jmsmock.domain.SenderConfigRepository;
+import jmsmock.domain.model.SenderConfig;
+import jmsmock.domain.repository.SenderConfigRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;

@@ -1,7 +1,7 @@
 package jmsmock.pipeline.factory;
 
-import jmsmock.domain.NodeConfig;
-import jmsmock.domain.ReceiverConfig;
+import jmsmock.domain.model.NodeConfig;
+import jmsmock.domain.model.ReceiverConfig;
 import jmsmock.pipeline.Node;
 import jmsmock.pipeline.impl.ReceiverTriggerNode;
 import jmsmock.service.ReceiverConfigService;

@@ -2,8 +2,8 @@ package jmsmock.converter;
 
 import jmsmock.api.dto.ParameterDto;
 import jmsmock.api.dto.ReceiverConfigDto;
-import jmsmock.domain.Parameter;
-import jmsmock.domain.ReceiverConfig;
+import jmsmock.domain.model.Parameter;
+import jmsmock.domain.model.ReceiverConfig;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.core.convert.ConversionService;

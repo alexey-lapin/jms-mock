@@ -1,7 +1,7 @@
 package jmsmock.infrastructure.web;
 
 import jmsmock.api.dto.SenderConfigDto;
-import jmsmock.domain.SenderConfig;
+import jmsmock.domain.model.SenderConfig;
 import jmsmock.service.SenderConfigService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.ConversionService;

@@ -1,6 +1,6 @@
 package jmsmock.pipeline.factory;
 
-import jmsmock.domain.NodeConfig;
+import jmsmock.domain.model.NodeConfig;
 import jmsmock.pipeline.Node;
 
 public interface NodeFactory {

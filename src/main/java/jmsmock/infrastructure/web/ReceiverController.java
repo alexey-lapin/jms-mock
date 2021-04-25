@@ -1,7 +1,7 @@
 package jmsmock.infrastructure.web;
 
 import jmsmock.api.dto.ReceiverConfigDto;
-import jmsmock.domain.ReceiverConfig;
+import jmsmock.domain.model.ReceiverConfig;
 import jmsmock.service.ReceiverConfigService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.ConversionService;

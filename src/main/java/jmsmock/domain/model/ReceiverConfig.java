@@ -1,7 +1,9 @@
-package jmsmock.domain;
+package jmsmock.domain.model;
 
+import jmsmock.domain.repository.ParametrizedConfig;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,31 +15,35 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
 import java.util.Set;
-import java.util.SortedSet;
 import java.util.UUID;
 
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
 @AllArgsConstructor
 @Getter
 @Setter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
-public class MockConfig {
+public class ReceiverConfig implements ParametrizedConfig {
 
+    @EqualsAndHashCode.Include
     @Id
     private UUID id;
 
     private String name;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-    @OrderBy("position ASC")
-    @JoinColumn(name = "mock_id")
-    private SortedSet<NodeConfig> nodes;
+    @JoinColumn(name = "config_id")
+    private Set<Parameter> parameters;
 
-    public void setNodes(@NonNull Set<NodeConfig> nodes) {
-        this.nodes.clear();
-        this.nodes.addAll(nodes);
+    public void setParameters(@NonNull Set<Parameter> parameters) {
+        this.parameters.clear();
+        this.parameters.addAll(parameters);
+    }
+
+    public String getDestination() {
+        return getParameter(PARAM_DESTINATION)
+                .orElseThrow(() -> new RuntimeException());
     }
 
 }

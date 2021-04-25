@@ -1,7 +1,7 @@
 package jmsmock.converter;
 
 import jmsmock.api.dto.ParameterDto;
-import jmsmock.domain.Parameter;
+import jmsmock.domain.model.Parameter;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;

@@ -1,5 +1,6 @@
-package jmsmock.domain;
+package jmsmock.domain.model;
 
+import jmsmock.domain.repository.ParametrizedConfig;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;

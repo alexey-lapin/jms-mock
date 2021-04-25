@@ -1,6 +1,6 @@
 package jmsmock.pipeline.impl;
 
-import jmsmock.domain.NodeConfig;
+import jmsmock.domain.model.NodeConfig;
 import jmsmock.pipeline.AbstractNode;
 import jmsmock.pipeline.Context;
 import jmsmock.pipeline.Handler;
