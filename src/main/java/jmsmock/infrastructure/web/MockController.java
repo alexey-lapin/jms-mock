@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -64,7 +65,7 @@ public class MockController {
     }
 
     @PostMapping("/mocks/{name}/trigger")
-    public void triggerMock(@PathVariable String name, @RequestBody TriggearbleSignalDto command) {
+    public void triggerMock(@PathVariable String name, @Valid @RequestBody TriggearbleSignalDto command) {
         Context context = conversionService.convert(command, Context.class);
         mockManager.triggerMock(name, context);
     }

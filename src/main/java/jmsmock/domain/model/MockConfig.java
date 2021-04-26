@@ -30,7 +30,7 @@ public class MockConfig {
 
     private String name;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @OrderBy("position ASC")
     @JoinColumn(name = "mock_id")
     private SortedSet<NodeConfig> nodes;

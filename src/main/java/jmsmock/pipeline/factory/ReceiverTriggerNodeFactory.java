@@ -4,6 +4,7 @@ import jmsmock.domain.model.NodeConfig;
 import jmsmock.domain.model.ReceiverConfig;
 import jmsmock.pipeline.Node;
 import jmsmock.pipeline.impl.ReceiverTriggerNode;
+import jmsmock.service.EventService;
 import jmsmock.service.ReceiverConfigService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jms.config.JmsListenerContainerFactory;
@@ -16,6 +17,8 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 @Component
 public class ReceiverTriggerNodeFactory implements NodeFactory {
+
+    private final EventService eventService;
 
     private final ReceiverConfigService receiverConfigService;
 
@@ -33,13 +36,14 @@ public class ReceiverTriggerNodeFactory implements NodeFactory {
 
         String destination = receiverConfig.getDestination();
 
-        ReceiverTriggerNode listener = new ReceiverTriggerNode(nodeConfig, messageConverter);
+        ReceiverTriggerNode listener = new ReceiverTriggerNode(nodeConfig, eventService, messageConverter);
 
         MessageListenerContainer listenerContainer = jmsListenerEndpointRegistry.getListenerContainer(receiverConfig.getName());
         if (listenerContainer == null) {
             SimpleJmsListenerEndpoint endpoint = new SimpleJmsListenerEndpoint();
             endpoint.setId(receiverConfig.getName());
             endpoint.setDestination(destination);
+//            endpoint.setSubscription();
             endpoint.setMessageListener(listener);
 
             jmsListenerEndpointRegistry.registerListenerContainer(endpoint, jmsListenerContainerFactory, true);

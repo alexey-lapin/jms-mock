@@ -4,7 +4,7 @@ import jmsmock.domain.model.MockConfig;
 import jmsmock.domain.repository.MockConfigRepository;
 import jmsmock.domain.model.NodeConfig;
 import jmsmock.domain.model.NodeType;
-import jmsmock.domain.repository.ParametrizedConfig;
+import jmsmock.domain.model.ParametrizedConfig;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
@@ -76,10 +76,12 @@ public class MockConfigService {
 
     private void validateNodeConfigs(MockConfig mockConfig) {
         NodeConfig headConfig = mockConfig.getNodes().stream().findFirst()
-                .orElseThrow(() -> new RuntimeException());
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                        "mock must have at least one node"));
 
         if (!headConfig.getType().isTrigger()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "first node must be a trigger");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "first node must be a trigger");
         }
 
         for (NodeConfig nodeConfig : mockConfig.getNodes()) {

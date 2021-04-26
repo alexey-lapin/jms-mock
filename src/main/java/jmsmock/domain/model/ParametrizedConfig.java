@@ -1,4 +1,4 @@
-package jmsmock.domain.repository;
+package jmsmock.domain.model;
 
 import jmsmock.domain.model.Parameter;
 

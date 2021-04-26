@@ -1,11 +1,10 @@
 package jmsmock.service;
 
-import jmsmock.domain.model.NodeConfig;
-import jmsmock.domain.repository.ParametrizedConfig;
+import jmsmock.domain.model.MockConfig;
 import jmsmock.domain.model.ReceiverConfig;
+import jmsmock.domain.model.ParametrizedConfig;
 import jmsmock.domain.repository.ReceiverConfigRepository;
 import jmsmock.mock.Mock;
-import jmsmock.pipeline.Node;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
@@ -13,8 +12,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -38,11 +42,13 @@ public class ReceiverConfigService {
     @Transactional
     public ReceiverConfig createReceiver(ReceiverConfig config) {
         repository.findByName(config.getName()).ifPresent(item -> {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "receiver [name=] already exist");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    String.format("receiver [name=%s] already exist", config.getName()));
         });
 
         config.getParameter(ParametrizedConfig.PARAM_DESTINATION)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "destination must be set"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                        "destination must be set"));
 
         return repository.save(config);
     }
@@ -50,12 +56,17 @@ public class ReceiverConfigService {
     @Transactional
     public ReceiverConfig updateReceiver(String name, ReceiverConfig config) {
         ReceiverConfig existingReceiverConfig = repository.findByName(name).orElseThrow(() ->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, "receiver [name=] does not exist"));
+                new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        String.format("receiver [name=%s] does not exist", name)));
 
         existingReceiverConfig.setName(config.getName());
         existingReceiverConfig.setParameters(config.getParameters());
 
-        // recreate mock if needed
+        // recreate mocks if needed
+        findUsages(mockManager.getMocks().values(), name).forEach(mock -> {
+            mockManager.unregisterMock(mock.getMockConfig());
+            mockManager.registerMock(mock.getMockConfig());
+        });
 
         return repository.save(existingReceiverConfig);
     }
@@ -63,28 +74,34 @@ public class ReceiverConfigService {
     @Transactional
     public void deleteReceiver(String name) {
         repository.findByName(name).orElseThrow(() ->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, "receiver [name=] does not exist"));
+                new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        String.format("receiver [name=%s] does not exist", name)));
 
-        // check mock
-        boolean isReceiverUser = mockManager.getMocks().values().stream()
-                .anyMatch(mock -> hasReceiver(mock, name));
-
-        if (isReceiverUser) {
-            throw new RuntimeException("receiver is in use");
+        String usages = findUsages(mockManager.getMocks().values(), name).stream()
+                .map(Mock::getMockConfig)
+                .map(MockConfig::getName)
+                .collect(Collectors.joining(", "));
+        if (!usages.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    String.format("receiver [name=%s] is used in [%s]", name, usages));
         }
 
         repository.deleteByName(name);
     }
 
-    private boolean hasReceiver(Mock mock, String receiverName) {
-        for (Node node = mock.getTrigger(); node != null; node = node.getNext()) {
-            NodeConfig nodeConfig = node.getNodeConfig();
-            String usedReceiverName = nodeConfig.getParameter("receiver-name").orElse(null);
-            if (receiverName.equals(usedReceiverName)) {
-                return true;
-            }
+    private Set<Mock> findUsages(Collection<Mock> mocks, String receiverName) {
+        Set<Mock> found = new HashSet<>();
+        for (Mock mock : mocks) {
+            mock.visitNodes(node -> {
+                String usedReceiverName = node.getNodeConfig()
+                        .getParameter("receiver-name")
+                        .orElse(null);
+                if (Objects.equals(receiverName, usedReceiverName)) {
+                    found.add(mock);
+                }
+            });
         }
-        return false;
+        return found;
     }
 
 }

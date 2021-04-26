@@ -9,11 +9,15 @@ import jmsmock.pipeline.Node;
 import jmsmock.pipeline.Triggerable;
 import jmsmock.pipeline.factory.NodeFactory;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.context.event.EventListener;
+import org.springframework.http.HttpStatus;
 import org.springframework.jms.config.JmsListenerEndpointRegistry;
 import org.springframework.jms.listener.MessageListenerContainer;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Collections;
 import java.util.List;
@@ -22,7 +26,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @RequiredArgsConstructor
 @Service
-public class MockManager implements InitializingBean {
+public class MockManager {
 
     private final MockConfigService mockConfigService;
 
@@ -32,8 +36,13 @@ public class MockManager implements InitializingBean {
 
     private final Map<String, Mock> mocks = new ConcurrentHashMap<>();
 
-    @Override
-    public void afterPropertiesSet() throws Exception {
+    @EventListener(ContextRefreshedEvent.class)
+    public void onApplicationEvent(ContextRefreshedEvent event) {
+        event.getApplicationContext().getBean(MockManager.class).initialize();
+    }
+
+    @Transactional(readOnly = true)
+    public void initialize() {
         List<MockConfig> mocks = mockConfigService.findAll();
 
         for (MockConfig mockConfig : mocks) {
@@ -86,11 +95,13 @@ public class MockManager implements InitializingBean {
     public void triggerMock(String name, Context context) {
         Mock mock = mocks.get(name);
         if (mock == null) {
-            throw new RuntimeException("no mock");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                    String.format("mock [name=%s] does not exist", name));
         }
         Node trigger = mock.getTrigger();
         if (!(trigger instanceof Triggerable)) {
-            throw new RuntimeException("not triggerable");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    String.format("mock [name=%s] is not triggerable", name));
         }
         Triggerable triggerable = (Triggerable) trigger;
         triggerable.trigger(context);

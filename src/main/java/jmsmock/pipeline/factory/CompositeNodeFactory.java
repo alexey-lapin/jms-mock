@@ -6,6 +6,7 @@ import jmsmock.pipeline.Node;
 import jmsmock.pipeline.impl.ComposerTriggerNode;
 import jmsmock.pipeline.impl.DelayHandlerNode;
 import jmsmock.pipeline.impl.LoggingHandlerNode;
+import jmsmock.service.EventService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
@@ -19,12 +20,14 @@ public class CompositeNodeFactory implements NodeFactory {
     private final NodeFactory senderHandlerNodeFactory;
     private final NodeFactory groovyHandlerNodeFactory;
 
+    private final EventService eventService;
+
     @Override
     public Node create(NodeConfig nodeConfig) {
         NodeType type = nodeConfig.getType();
         switch (type) {
             case COMPOSER:
-                return new ComposerTriggerNode(nodeConfig);
+                return new ComposerTriggerNode(nodeConfig, eventService);
             case DELAY:
                 return new DelayHandlerNode(nodeConfig);
             case GROOVY:

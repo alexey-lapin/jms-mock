@@ -1,6 +1,5 @@
 package jmsmock.domain.model;
 
-import jmsmock.domain.repository.ParametrizedConfig;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,7 +27,7 @@ public class NodeConfig implements Comparable<NodeConfig>, ParametrizedConfig {
 
     private int position;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "config_id")
     private Set<Parameter> parameters;
 

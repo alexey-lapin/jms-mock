@@ -4,6 +4,7 @@ import jmsmock.domain.model.NodeConfig;
 import jmsmock.domain.model.SenderConfig;
 import jmsmock.pipeline.Node;
 import jmsmock.pipeline.impl.SenderHandlerNode;
+import jmsmock.service.EventService;
 import jmsmock.service.SenderConfigService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jms.core.JmsTemplate;
@@ -12,6 +13,8 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 @Component
 public class SenderHandlerNodeFactory implements NodeFactory {
+
+    private final EventService eventService;
 
     private final SenderConfigService senderConfigService;
 
@@ -27,7 +30,7 @@ public class SenderHandlerNodeFactory implements NodeFactory {
 
         String destination = senderConfig.getDestination();
 
-        return new SenderHandlerNode(nodeConfig, jmsTemplate, destination);
+        return new SenderHandlerNode(nodeConfig, eventService, jmsTemplate, destination);
     }
 
 }

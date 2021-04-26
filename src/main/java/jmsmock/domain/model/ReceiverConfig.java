@@ -1,6 +1,5 @@
 package jmsmock.domain.model;
 
-import jmsmock.domain.repository.ParametrizedConfig;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -32,7 +31,7 @@ public class ReceiverConfig implements ParametrizedConfig {
 
     private String name;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "config_id")
     private Set<Parameter> parameters;
 

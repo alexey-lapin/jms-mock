@@ -4,46 +4,59 @@ import jmsmock.domain.model.MockConfig;
 import jmsmock.pipeline.Context;
 import jmsmock.pipeline.Handler;
 import jmsmock.pipeline.Node;
+import jmsmock.pipeline.NodeVisitor;
 import jmsmock.pipeline.Trigger;
+import lombok.Getter;
 import org.springframework.util.Assert;
 import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 
 public class Mock {
 
-    private final Node trigger;
+    private final Node head;
 
+    @Getter
     private final MockConfig mockConfig;
 
     private Disposable subscription;
 
-    public Mock(Node trigger, MockConfig mockConfig) {
-        Assert.isInstanceOf(Trigger.class, trigger, "trigger must be instance of Trigger.class");
+    public Mock(Node head, MockConfig mockConfig) {
+        Assert.isInstanceOf(Trigger.class, head, "first node must be an instance of Trigger.class");
         Assert.notNull(mockConfig, "mockConfig must not be null");
-        this.trigger = trigger;
+        this.head = head;
         this.mockConfig = mockConfig;
     }
 
     public Node getTrigger() {
-        return trigger;
+        return head;
     }
 
     public void init() {
-        Flux<Context> flux = ((Trigger) trigger).getFlux();
+        Trigger trigger = (Trigger) this.head;
+        trigger.setMock(this);
+        AtomicReference<Flux<Context>> fluxRef = new AtomicReference<>(trigger.getFlux());
 
-        for(Node node = trigger; node != null; node = node.getNext()) {
+        visitNodes(node -> {
             if (node instanceof Handler) {
                 Handler handler = (Handler) node;
-                flux = handler.handle(flux);
+                fluxRef.set(handler.handle(fluxRef.get()));
             }
-        }
+        });
 
-        subscription = flux.subscribe();
+        subscription = fluxRef.get().subscribe();
     }
 
     public void stop() {
         subscription.dispose();
+    }
+
+    public void visitNodes(NodeVisitor visitor) {
+        for (Node node = head; node != null; node = node.getNext()) {
+            visitor.visit(node);
+        }
     }
 
 }
