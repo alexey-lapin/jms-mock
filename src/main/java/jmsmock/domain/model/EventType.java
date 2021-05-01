@@ -4,6 +4,7 @@ public enum EventType {
 
     INFO,
     WARN,
-    ERROR
+    ERROR,
+    PING
 
 }

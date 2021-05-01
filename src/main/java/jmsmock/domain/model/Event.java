@@ -36,4 +36,8 @@ public class Event {
         return of(EventType.ERROR, message);
     }
 
+    public static Event ping() {
+        return of(EventType.PING, "ping");
+    }
+
 }
