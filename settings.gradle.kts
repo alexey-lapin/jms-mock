@@ -7,3 +7,5 @@ pluginManagement {
     }
 }
 rootProject.name = "jms-mock"
+include(":backend")
+include(":backend:service")

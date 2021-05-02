@@ -1,7 +1,5 @@
 package jmsmock.domain.model;
 
-import jmsmock.domain.model.Parameter;
-
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;

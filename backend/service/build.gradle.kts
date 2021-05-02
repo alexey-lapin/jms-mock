@@ -1,18 +1,10 @@
+import org.springframework.boot.gradle.tasks.bundling.BootJar
+
 plugins {
-    id("java")
+    java
     id("com.github.ben-manes.versions")
     id("io.spring.dependency-management")
     id("org.springframework.boot")
-}
-
-group "org.example"
-
-//version "1.0-SNAPSHOT"
-
-def env = project.findProperty("env")
-
-repositories {
-    mavenCentral()
 }
 
 dependencies {
@@ -28,11 +20,7 @@ dependencies {
     implementation("com.ibm.mq:mq-jms-spring-boot-starter:2.4.5")
     implementation("io.projectreactor:reactor-core:3.4.5")
 
-    if (env == "local") {
-        runtimeOnly("com.h2database:h2")
-    } else {
-        runtimeOnly("org.postgresql:postgresql")
-    }
+    runtimeOnly("com.h2database:h2")
     runtimeOnly("org.liquibase:liquibase-core:4.3.4")
 
     runtimeOnly("org.codehaus.groovy:groovy:3.0.8")
@@ -42,27 +30,10 @@ dependencies {
 
 }
 
-dependencyUpdates {
-    checkConstraints = true
-    resolutionStrategy {
-        componentSelection {
-            all {
-                def rejected = ["alpha", "beta", "rc", "cr", "m", "preview", "b", "ea"]
-                        .collect { qualifier -> /(?i).*[.-]$qualifier[.\\d-+]*/ }
-                        .any { it.matches(candidate.version) }
-                if (rejected) {
-                    reject("Release candidate")
-                }
-            }
-        }
+tasks {
+
+    bootJar {
+        archiveFileName.set("${rootProject.name}.${archiveExtension.get()}")
     }
-}
 
-tasks.withType(JavaCompile) {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
-}
-
-test {
-    useJUnitPlatform()
 }
