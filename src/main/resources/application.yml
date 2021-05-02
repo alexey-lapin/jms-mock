@@ -4,5 +4,10 @@ server:
 
 spring:
   datasource:
-    generate-unique-name: false
-  h2.console.enabled: true
+    url: jdbc:h2:file:~/jms-mock-h2
+
+app:
+  events:
+    ping:
+      enabled: true
+      interval: PT15S

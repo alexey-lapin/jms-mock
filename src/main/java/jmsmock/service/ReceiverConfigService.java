@@ -4,7 +4,7 @@ import jmsmock.domain.model.MockConfig;
 import jmsmock.domain.model.ReceiverConfig;
 import jmsmock.domain.model.ParametrizedConfig;
 import jmsmock.domain.repository.ReceiverConfigRepository;
-import jmsmock.mock.Mock;
+import jmsmock.application.mock.Mock;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;

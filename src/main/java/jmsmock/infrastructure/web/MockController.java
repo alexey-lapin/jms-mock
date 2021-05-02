@@ -3,7 +3,7 @@ package jmsmock.infrastructure.web;
 import jmsmock.api.dto.MockConfigDto;
 import jmsmock.api.dto.TriggearbleSignalDto;
 import jmsmock.domain.model.MockConfig;
-import jmsmock.pipeline.Context;
+import jmsmock.application.pipeline.Context;
 import jmsmock.service.MockConfigService;
 import jmsmock.service.MockManager;
 import lombok.RequiredArgsConstructor;

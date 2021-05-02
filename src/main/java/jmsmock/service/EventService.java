@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.http.MediaType;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -41,12 +40,6 @@ public class EventService {
         client.onTimeout(() -> clients.remove(client));
         client.onCompletion(() -> clients.remove(client));
         clients.add(client);
-    }
-
-    // send ping event to keep connection alive
-    @Scheduled(fixedDelay = 25 * 1000)
-    public void scheduleFixedDelayTask() {
-        emit(Event.ping());
     }
 
 }
