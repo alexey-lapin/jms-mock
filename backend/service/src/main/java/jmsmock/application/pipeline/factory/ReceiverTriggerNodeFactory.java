@@ -1,5 +1,6 @@
 package jmsmock.application.pipeline.factory;
 
+import jmsmock.application.mock.CompositeMessageListener;
 import jmsmock.domain.model.NodeConfig;
 import jmsmock.domain.model.ReceiverConfig;
 import jmsmock.application.pipeline.Node;
@@ -10,9 +11,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.jms.config.JmsListenerContainerFactory;
 import org.springframework.jms.config.JmsListenerEndpointRegistry;
 import org.springframework.jms.config.SimpleJmsListenerEndpoint;
+import org.springframework.jms.listener.AbstractMessageListenerContainer;
 import org.springframework.jms.listener.MessageListenerContainer;
 import org.springframework.jms.support.converter.MessageConverter;
 import org.springframework.stereotype.Component;
+
+import javax.jms.MessageListener;
 
 @RequiredArgsConstructor
 @Component
@@ -40,16 +44,21 @@ public class ReceiverTriggerNodeFactory implements NodeFactory {
 
         MessageListenerContainer listenerContainer = jmsListenerEndpointRegistry.getListenerContainer(receiverConfig.getName());
         if (listenerContainer == null) {
+            CompositeMessageListener compositeMessageListener = new CompositeMessageListener();
+            compositeMessageListener.addChild(listener);
             SimpleJmsListenerEndpoint endpoint = new SimpleJmsListenerEndpoint();
             endpoint.setId(receiverConfig.getName());
             endpoint.setDestination(destination);
-//            endpoint.setSubscription();
-            endpoint.setMessageListener(listener);
+            endpoint.setMessageListener(compositeMessageListener);
 
             jmsListenerEndpointRegistry.registerListenerContainer(endpoint, jmsListenerContainerFactory, true);
         } else {
-            listenerContainer.setupMessageListener(listener);
-            listenerContainer.start();
+            if (listenerContainer instanceof AbstractMessageListenerContainer) {
+                Object messageListener = ((AbstractMessageListenerContainer) listenerContainer).getMessageListener();
+                if (messageListener instanceof CompositeMessageListener) {
+                    ((CompositeMessageListener) messageListener).addChild(listener);
+                }
+            }
         }
 
         return listener;

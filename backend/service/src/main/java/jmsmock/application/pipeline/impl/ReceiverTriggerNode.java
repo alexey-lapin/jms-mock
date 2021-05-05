@@ -1,13 +1,10 @@
 package jmsmock.application.pipeline.impl;
 
-import jmsmock.domain.model.Event;
-import jmsmock.domain.model.NodeConfig;
-import jmsmock.application.mock.Mock;
 import jmsmock.application.pipeline.AbstractNode;
 import jmsmock.application.pipeline.Context;
 import jmsmock.application.pipeline.Trigger;
+import jmsmock.domain.model.NodeConfig;
 import jmsmock.service.EventService;
-import lombok.Setter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jms.support.converter.MessageConverter;
@@ -26,9 +23,6 @@ public class ReceiverTriggerNode extends AbstractNode implements Trigger, Messag
 
     private final EventService eventService;
 
-    @Setter
-    private Mock mock;
-
     private final MessageConverter messageConverter;
 
     public ReceiverTriggerNode(NodeConfig nodeConfig, EventService eventService, MessageConverter messageConverter) {
@@ -44,11 +38,7 @@ public class ReceiverTriggerNode extends AbstractNode implements Trigger, Messag
 
     @Override
     public void onMessage(Message message) {
-        String event = String.format("mock [name=%s] triggered", mock.getMockConfig().getName());
-        log.info(event);
-        eventService.emit(Event.info(event));
         Context context = new Context();
-        context.setAttribute(Context.MOCK, mock);
         context.setAttribute(Context.INBOUND_MESSAGE, convertMessage(message));
         sink.emitNext(context, Sinks.EmitFailureHandler.FAIL_FAST);
     }

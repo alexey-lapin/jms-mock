@@ -1,15 +1,15 @@
 package jmsmock.application.pipeline.impl;
 
-import jmsmock.domain.model.Event;
-import jmsmock.domain.model.NodeConfig;
 import jmsmock.application.mock.Mock;
 import jmsmock.application.pipeline.AbstractNode;
 import jmsmock.application.pipeline.Context;
 import jmsmock.application.pipeline.Handler;
 import jmsmock.application.pipeline.Trigger;
 import jmsmock.application.pipeline.Triggerable;
+import jmsmock.domain.model.Event;
+import jmsmock.domain.model.MockConfig;
+import jmsmock.domain.model.NodeConfig;
 import jmsmock.service.EventService;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scripting.ScriptEvaluator;
 import org.springframework.scripting.ScriptSource;
@@ -32,9 +32,6 @@ public class GroovyHandlerNode extends AbstractNode implements Handler, Trigger,
 
     private final ScriptSource scriptSource;
 
-    @Setter
-    private Mock mock;
-
     public GroovyHandlerNode(NodeConfig nodeConfig,
                              EventService eventService,
                              ScriptEvaluator scriptEvaluator,
@@ -48,9 +45,20 @@ public class GroovyHandlerNode extends AbstractNode implements Handler, Trigger,
     @Override
     public Flux<Context> handle(Flux<Context> stream) {
         return stream.map(context -> {
-            Map<String, Object> args = new HashMap<>();
-            args.put("context", context);
-            scriptEvaluator.evaluate(scriptSource, args);
+            try {
+                Map<String, Object> args = new HashMap<>();
+                args.put("context", context);
+                scriptEvaluator.evaluate(scriptSource, args);
+            } catch (Exception ex) {
+                String mockName = context.getAttribute(Context.MOCK)
+                        .map(Mock::getMockConfig)
+                        .map(MockConfig::getName)
+                        .orElse("unknown");
+                String message = String.format("mock [name=%s] failed to execute groovy script: %s",
+                        mockName,
+                        ex.getMessage());
+                eventService.emit(Event.error(message));
+            }
             return context;
         });
     }
@@ -62,10 +70,6 @@ public class GroovyHandlerNode extends AbstractNode implements Handler, Trigger,
 
     @Override
     public void trigger(Context context) {
-        String event = String.format("mock [name=%s] triggered", mock.getMockConfig().getName());
-        log.info(event);
-        eventService.emit(Event.info(event));
-        context.setAttribute(Context.MOCK, mock);
         sink.emitNext(context, Sinks.EmitFailureHandler.FAIL_FAST);
     }
 
