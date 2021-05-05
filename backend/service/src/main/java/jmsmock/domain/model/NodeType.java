@@ -10,7 +10,8 @@ public enum NodeType {
     GROOVY("groovy", true),
     LOGGER("logger", false),
     RECEIVER("receiver", true),
-    SENDER("sender", false);
+    SENDER("sender", false),
+    INTERVAL("interval", true);
 
     private final String name;
 

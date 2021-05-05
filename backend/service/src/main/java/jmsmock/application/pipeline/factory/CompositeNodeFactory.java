@@ -1,11 +1,12 @@
 package jmsmock.application.pipeline.factory;
 
-import jmsmock.domain.model.NodeConfig;
-import jmsmock.domain.model.NodeType;
 import jmsmock.application.pipeline.Node;
 import jmsmock.application.pipeline.impl.ComposerTriggerNode;
 import jmsmock.application.pipeline.impl.DelayHandlerNode;
+import jmsmock.application.pipeline.impl.IntervalTriggerNode;
 import jmsmock.application.pipeline.impl.LoggingHandlerNode;
+import jmsmock.domain.model.NodeConfig;
+import jmsmock.domain.model.NodeType;
 import jmsmock.service.EventService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
@@ -30,6 +31,8 @@ public class CompositeNodeFactory implements NodeFactory {
                 return new ComposerTriggerNode(nodeConfig, eventService);
             case DELAY:
                 return new DelayHandlerNode(nodeConfig);
+            case INTERVAL:
+                return new IntervalTriggerNode(nodeConfig, eventService);
             case GROOVY:
                 return groovyHandlerNodeFactory.create(nodeConfig);
             case LOGGER:

@@ -12,6 +12,6 @@
 - [ ] enable/disable mocks
 - [ ] config sse (https://serverfault.com/questions/801628/for-server-sent-events-sse-what-nginx-proxy-configuration-is-appropriate)
 - [ ] expand to messaging (kafka, rabbit, ...)
-- [ ] interval trigger
+- [x] interval trigger
 - [ ] inline sender
 - [x] multiple mock can share same trigger
