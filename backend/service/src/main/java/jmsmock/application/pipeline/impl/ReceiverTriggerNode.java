@@ -19,7 +19,7 @@ public class ReceiverTriggerNode extends AbstractNode implements Trigger, Messag
 
     public static final String PARAMETER_RECEIVER_NAME = "receiver-name";
 
-    private final Sinks.Many<Context> sink = Sinks.many().unicast().onBackpressureBuffer();
+    private final Sinks.Many<Context> sink = Sinks.many().multicast().directBestEffort();
 
     private final EventService eventService;
 

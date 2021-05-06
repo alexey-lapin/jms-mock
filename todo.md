@@ -8,9 +8,9 @@
 - [ ] readme
 - [ ] config mq properties
 - [ ] browse queues
-- [ ] enable/disable receivers
-- [ ] enable/disable mocks
-- [ ] config sse (https://serverfault.com/questions/801628/for-server-sent-events-sse-what-nginx-proxy-configuration-is-appropriate)
+- [x] enable/disable receivers
+- [x] enable/disable mocks
+- [x] config sse (https://serverfault.com/questions/801628/for-server-sent-events-sse-what-nginx-proxy-configuration-is-appropriate)
 - [ ] expand to messaging (kafka, rabbit, ...)
 - [x] interval trigger
 - [ ] inline sender

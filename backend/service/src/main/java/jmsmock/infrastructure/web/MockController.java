@@ -64,6 +64,11 @@ public class MockController {
         mockConfigService.deleteMock(name);
     }
 
+    @PostMapping("/mocks/{name}/toggle")
+    public void enableMock(@PathVariable String name) {
+        mockManager.toggleMock(name);
+    }
+
     @PostMapping("/mocks/{name}/trigger")
     public void triggerMock(@PathVariable String name, @Valid @RequestBody TriggearbleSignalDto command) {
         Context context = conversionService.convert(command, Context.class);

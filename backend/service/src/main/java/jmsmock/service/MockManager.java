@@ -100,6 +100,17 @@ public class MockManager {
         }
     }
 
+    public void toggleMock(String name) {
+        Mock mock = mocks.get(name);
+        if (mock != null) {
+            if (mock.isRunning()) {
+                mock.stop();
+            } else {
+                mock.init();
+            }
+        }
+    }
+
     public void triggerMock(String name, Context context) {
         Mock mock = mocks.get(name);
         if (mock == null) {

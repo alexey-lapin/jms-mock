@@ -56,4 +56,9 @@ public class ReceiverController {
         receiverConfigService.deleteReceiver(name);
     }
 
+    @PostMapping("/receivers/{name}/toggle")
+    public void toggleReceiver(@PathVariable String name) {
+        receiverConfigService.toggle(name);
+    }
+
 }

@@ -1,5 +1,6 @@
 package jmsmock.application.pipeline.impl;
 
+import jmsmock.domain.model.Event;
 import jmsmock.domain.model.NodeConfig;
 import jmsmock.application.pipeline.AbstractNode;
 import jmsmock.application.pipeline.Context;
@@ -44,7 +45,7 @@ public class SenderHandlerNode extends AbstractNode implements Handler {
                 String event = String.format("mock [name=%s] sender [name=%s] skips message sending",
                         context.getAttribute(Context.MOCK).get().getMockConfig().getName(),
                         getNodeConfig().getParameter(PARAMETER_SENDER_NAME).get());
-//                eventService.emit(Event.warn(event));
+                eventService.emit(Event.warn(event));
                 log.warn(event);
             }
             return context;

@@ -66,6 +66,10 @@ public class Mock {
         subscription.dispose();
     }
 
+    public boolean isRunning() {
+        return !subscription.isDisposed();
+    }
+
     public void visitNodes(NodeVisitor visitor) {
         for (Node node = head; node != null; node = node.getNext()) {
             visitor.visit(node);

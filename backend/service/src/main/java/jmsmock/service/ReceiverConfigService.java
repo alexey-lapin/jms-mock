@@ -26,6 +26,8 @@ public class ReceiverConfigService {
 
     private final ReceiverConfigRepository repository;
 
+    private final JmsListenerService jmsListenerService;
+
     @Lazy
     private final MockManager mockManager;
 
@@ -87,6 +89,14 @@ public class ReceiverConfigService {
         }
 
         repository.deleteByName(name);
+    }
+
+    public void toggle(String name) {
+        repository.findByName(name).orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        String.format("receiver [name=%s] does not exist", name)));
+
+        jmsListenerService.toggle(name);
     }
 
     private Set<Mock> findUsages(Collection<Mock> mocks, String receiverName) {
