@@ -1,7 +1,7 @@
 - [ ] refactor to reactive stack
 - [x] move src to separate module
 - [ ] add frontend
-- [ ] kotlin gradle dsl
+- [x] kotlin gradle dsl
 - [ ] transform frontend links
 - [x] config h2
 - [x] config ping events
