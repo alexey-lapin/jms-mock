@@ -15,3 +15,4 @@
 - [x] interval trigger
 - [ ] inline sender
 - [x] multiple mock can share same trigger
+- [ ] template support
