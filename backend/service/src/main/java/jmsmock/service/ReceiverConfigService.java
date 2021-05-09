@@ -64,7 +64,6 @@ public class ReceiverConfigService {
         existingReceiverConfig.setName(config.getName());
         existingReceiverConfig.setParameters(config.getParameters());
 
-        // recreate mocks if needed
         findUsages(mockManager.getMocks().values(), name).forEach(mock -> {
             mockManager.unregisterMock(mock.getMockConfig());
             mockManager.registerMock(mock.getMockConfig());
