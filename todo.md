@@ -16,3 +16,5 @@
 - [ ] inline sender
 - [x] multiple mock can share same trigger
 - [ ] template support
+- [ ] item (mock, connector, destination) description
+- [ ] item (mock, connector, destination) labels
