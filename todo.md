@@ -1,11 +1,16 @@
+common:
+- [ ] readme
+
+frontend:
+- [ ] add frontend
+
+backend:
 - [ ] refactor to reactive stack
 - [x] move src to separate module
-- [ ] add frontend
 - [x] kotlin gradle dsl
 - [ ] transform frontend links
 - [x] config h2
 - [x] config ping events
-- [ ] readme
 - [ ] config mq properties
 - [ ] browse queues
 - [x] enable/disable receivers
