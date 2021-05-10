@@ -1,5 +1,6 @@
 common:
 - [ ] readme
+- [ ] CI
 
 frontend:
 - [ ] add frontend
@@ -17,6 +18,7 @@ backend:
 - [x] enable/disable mocks
 - [x] config sse (https://serverfault.com/questions/801628/for-server-sent-events-sse-what-nginx-proxy-configuration-is-appropriate)
 - [ ] expand to messaging (kafka, rabbit, ...)
+- [ ] add http support
 - [x] interval trigger
 - [ ] inline sender
 - [x] multiple mock can share same trigger
