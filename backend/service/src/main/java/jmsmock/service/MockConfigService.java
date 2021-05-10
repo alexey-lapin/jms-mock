@@ -74,6 +74,17 @@ public class MockConfigService {
         repository.deleteByName(name);
     }
 
+    @Transactional
+    public MockConfig toggleMock(String name) {
+        MockConfig mockConfig = repository.findByName(name).orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        String.format("mock config [name=%s] does not exist", name)));
+
+        mockConfig.setEnabled(!mockConfig.isEnabled());
+
+        return repository.save(mockConfig);
+    }
+
     private void validateNodeConfigs(MockConfig mockConfig) {
         NodeConfig headConfig = mockConfig.getNodes().stream().findFirst()
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST,

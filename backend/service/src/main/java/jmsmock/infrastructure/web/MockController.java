@@ -65,8 +65,10 @@ public class MockController {
     }
 
     @PostMapping("/mocks/{name}/toggle")
-    public void enableMock(@PathVariable String name) {
+    public MockConfigDto enableMock(@PathVariable String name) {
         mockManager.toggleMock(name);
+        MockConfig result = mockConfigService.toggleMock(name);
+        return conversionService.convert(result, MockConfigDto.class);
     }
 
     @PostMapping("/mocks/{name}/trigger")

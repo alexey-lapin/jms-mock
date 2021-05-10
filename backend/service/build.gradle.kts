@@ -1,5 +1,3 @@
-import org.springframework.boot.gradle.tasks.bundling.BootJar
-
 plugins {
     java
     id("com.github.ben-manes.versions")
