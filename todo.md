@@ -4,6 +4,9 @@ common:
 
 frontend:
 - [ ] add frontend
+- [ ] composer node - headers (templatable)
+- [ ] composer node - payload (templatable)
+- [ ] composer node - history
 
 backend:
 - [ ] refactor to reactive stack
