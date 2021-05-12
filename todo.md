@@ -4,6 +4,7 @@ common:
 
 frontend:
 - [ ] add frontend
+- [ ] refactor to use some UI component library 
 - [ ] composer node - headers (templatable)
 - [ ] composer node - payload (templatable)
 - [ ] composer node - history
