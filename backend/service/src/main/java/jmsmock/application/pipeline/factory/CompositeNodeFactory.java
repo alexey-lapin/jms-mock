@@ -20,6 +20,7 @@ public class CompositeNodeFactory implements NodeFactory {
     private final NodeFactory receiverTriggerNodeFactory;
     private final NodeFactory senderHandlerNodeFactory;
     private final NodeFactory groovyHandlerNodeFactory;
+    private final NodeFactory templateHandlerNodeFactory;
 
     private final EventService eventService;
 
@@ -41,6 +42,8 @@ public class CompositeNodeFactory implements NodeFactory {
                 return receiverTriggerNodeFactory.create(nodeConfig);
             case SENDER:
                 return senderHandlerNodeFactory.create(nodeConfig);
+            case TEMPLATE:
+                return templateHandlerNodeFactory.create(nodeConfig);
             default:
                 throw new RuntimeException("node type is unknown");
         }
