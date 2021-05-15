@@ -51,7 +51,9 @@ public class MockManager {
         List<MockConfig> mocks = mockConfigService.findAll();
 
         for (MockConfig mockConfig : mocks) {
-            registerMock(mockConfig);
+            if (mockConfig.isEnabled()) {
+                registerMock(mockConfig);
+            }
         }
     }
 

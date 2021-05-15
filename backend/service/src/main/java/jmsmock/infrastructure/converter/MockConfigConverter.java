@@ -35,7 +35,7 @@ public class MockConfigConverter {
                 nodes.add(convertNodeConfig(nodeConfigList.get(i), i));
             }
 
-            return new MockConfig(UUID.randomUUID(), source.getName(), nodes);
+            return new MockConfig(UUID.randomUUID(), source.getName(), source.getIsEnabled().orElse(true), nodes);
         }
 
         private NodeConfig convertNodeConfig(NodeConfigDto source, int position) {
@@ -68,6 +68,7 @@ public class MockConfigConverter {
             return MockConfigDto.builder()
                     .id(source.getId())
                     .name(source.getName())
+                    .isEnabled(source.isEnabled())
                     .nodes(nodes)
                     .build();
         }

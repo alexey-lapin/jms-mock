@@ -30,6 +30,8 @@ public class MockConfig {
 
     private String name;
 
+    private boolean isEnabled;
+
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @OrderBy("position ASC")
     @JoinColumn(name = "mock_id")
