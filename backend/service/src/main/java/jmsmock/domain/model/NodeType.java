@@ -11,7 +11,8 @@ public enum NodeType {
     LOGGER("logger", false),
     RECEIVER("receiver", true),
     SENDER("sender", false),
-    INTERVAL("interval", true);
+    INTERVAL("interval", true),
+    TEMPLATE("template", false);
 
     private final String name;
 

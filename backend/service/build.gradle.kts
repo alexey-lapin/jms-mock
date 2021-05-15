@@ -17,14 +17,18 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
 //    implementation("org.springframework.boot:spring-boot-starter-webflux")
 
+    implementation("com.github.jknack:handlebars:4.2.0")
     implementation("com.ibm.mq:mq-jms-spring-boot-starter:2.4.5")
+    implementation("com.jayway.jsonpath:json-path")
     implementation("io.projectreactor:reactor-core:3.4.5")
+    implementation("org.zalando:logbook-spring-boot-starter:2.6.2")
 
     runtimeOnly("com.h2database:h2")
+    runtimeOnly("org.codehaus.groovy:groovy:3.0.8")
     runtimeOnly("org.liquibase:liquibase-core:4.3.4")
 
-    runtimeOnly("org.codehaus.groovy:groovy:3.0.8")
-
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("io.projectreactor:reactor-test:3.4.5")
 //    testImplementation("org.junit.jupiter:junit-jupiter-api:5.6.0")
 //    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
 
