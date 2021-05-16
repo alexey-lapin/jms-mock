@@ -39,8 +39,11 @@ public class SenderHandlerNode extends AbstractNode implements Handler {
         return stream.map(context -> {
             Optional<Message<String>> outboundMessage = context.getAttribute(Context.OUTBOUND_MESSAGE);
             if (outboundMessage.isPresent()) {
-                log.info("sending");
-                jmsTemplate.convertAndSend(destination, outboundMessage.get());
+                try {
+                    jmsTemplate.convertAndSend(destination, outboundMessage.get());
+                } catch (Exception ex) {
+                    log.error("failed to send message", ex);
+                }
             } else {
                 String event = String.format("mock [name=%s] sender [name=%s] skips message sending",
                         context.getAttribute(Context.MOCK).get().getMockConfig().getName(),
