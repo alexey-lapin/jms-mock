@@ -29,7 +29,10 @@ public class ReceiverConfigConverter {
                     .map(item -> conversionService.convert(item, Parameter.class))
                     .collect(Collectors.toSet());
 
-            return new ReceiverConfig(UUID.randomUUID(), source.getName(), parameters);
+            return new ReceiverConfig(UUID.randomUUID(),
+                    source.getName(),
+                    source.getIsEnabled().orElse(true),
+                    parameters);
         }
     }
 
@@ -49,6 +52,7 @@ public class ReceiverConfigConverter {
             return ReceiverConfigDto.builder()
                     .id(source.getId())
                     .name(source.getName())
+                    .isEnabled(source.isEnabled())
                     .parameters(parameters)
                     .build();
         }

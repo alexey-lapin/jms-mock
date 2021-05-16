@@ -2,6 +2,7 @@ package jmsmock.infrastructure.web;
 
 import jmsmock.api.dto.ReceiverConfigDto;
 import jmsmock.domain.model.ReceiverConfig;
+import jmsmock.service.JmsListenerService;
 import jmsmock.service.ReceiverConfigService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.ConversionService;
@@ -28,6 +29,8 @@ public class ReceiverController {
 
     private final ConversionService conversionService;
 
+    private final JmsListenerService jmsListenerService;
+
     @GetMapping("/receivers")
     public List<ReceiverConfigDto> getAllReceivers() {
         return receiverConfigService.findAll().stream()
@@ -44,7 +47,8 @@ public class ReceiverController {
     }
 
     @PutMapping("/receivers/{name}")
-    public ReceiverConfigDto updateReceiver(@PathVariable String name, @RequestBody ReceiverConfigDto command) {
+    public ReceiverConfigDto updateReceiver(@PathVariable String name,
+                                            @RequestBody ReceiverConfigDto command) {
         ReceiverConfig config = conversionService.convert(command, ReceiverConfig.class);
         ReceiverConfig result = receiverConfigService.updateReceiver(name, config);
         return conversionService.convert(result, ReceiverConfigDto.class);
@@ -57,8 +61,10 @@ public class ReceiverController {
     }
 
     @PostMapping("/receivers/{name}/toggle")
-    public void toggleReceiver(@PathVariable String name) {
-        receiverConfigService.toggle(name);
+    public ReceiverConfigDto toggleReceiver(@PathVariable String name) {
+        ReceiverConfig result = receiverConfigService.toggle(name);
+        jmsListenerService.toggle(name);
+        return conversionService.convert(result, ReceiverConfigDto.class);
     }
 
 }

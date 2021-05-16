@@ -1,10 +1,10 @@
 package jmsmock.application.pipeline.factory;
 
 import jmsmock.application.mock.CompositeMessageListener;
-import jmsmock.domain.model.NodeConfig;
-import jmsmock.domain.model.ReceiverConfig;
 import jmsmock.application.pipeline.Node;
 import jmsmock.application.pipeline.impl.ReceiverTriggerNode;
+import jmsmock.domain.model.NodeConfig;
+import jmsmock.domain.model.ReceiverConfig;
 import jmsmock.service.EventService;
 import jmsmock.service.ReceiverConfigService;
 import lombok.RequiredArgsConstructor;
@@ -15,8 +15,6 @@ import org.springframework.jms.listener.AbstractMessageListenerContainer;
 import org.springframework.jms.listener.MessageListenerContainer;
 import org.springframework.jms.support.converter.MessageConverter;
 import org.springframework.stereotype.Component;
-
-import javax.jms.MessageListener;
 
 @RequiredArgsConstructor
 @Component
@@ -42,7 +40,8 @@ public class ReceiverTriggerNodeFactory implements NodeFactory {
 
         ReceiverTriggerNode listener = new ReceiverTriggerNode(nodeConfig, eventService, messageConverter);
 
-        MessageListenerContainer listenerContainer = jmsListenerEndpointRegistry.getListenerContainer(receiverConfig.getName());
+        MessageListenerContainer listenerContainer =
+                jmsListenerEndpointRegistry.getListenerContainer(receiverConfig.getName());
         if (listenerContainer == null) {
             CompositeMessageListener compositeMessageListener = new CompositeMessageListener();
             compositeMessageListener.addChild(listener);
@@ -51,7 +50,9 @@ public class ReceiverTriggerNodeFactory implements NodeFactory {
             endpoint.setDestination(destination);
             endpoint.setMessageListener(compositeMessageListener);
 
-            jmsListenerEndpointRegistry.registerListenerContainer(endpoint, jmsListenerContainerFactory, true);
+            jmsListenerEndpointRegistry.registerListenerContainer(endpoint,
+                    jmsListenerContainerFactory,
+                    receiverConfig.isEnabled());
         } else {
             if (listenerContainer instanceof AbstractMessageListenerContainer) {
                 Object messageListener = ((AbstractMessageListenerContainer) listenerContainer).getMessageListener();

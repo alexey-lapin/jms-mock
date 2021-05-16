@@ -11,4 +11,11 @@
         <addNotNullConstraint tableName="mock_config" columnName="is_enabled" defaultNullValue="true"/>
     </changeSet>
 
+    <changeSet author="al" id="02">
+        <addColumn tableName="receiver_config">
+            <column name="is_enabled" type="bool"/>
+        </addColumn>
+        <addNotNullConstraint tableName="receiver_config" columnName="is_enabled" defaultNullValue="true"/>
+    </changeSet>
+
 </databaseChangeLog>

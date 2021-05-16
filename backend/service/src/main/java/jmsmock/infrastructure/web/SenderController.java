@@ -44,7 +44,8 @@ public class SenderController {
     }
 
     @PutMapping("/senders/{name}")
-    public SenderConfigDto updateSender(@PathVariable String name, @RequestBody SenderConfigDto command) {
+    public SenderConfigDto updateSender(@PathVariable String name,
+                                        @RequestBody SenderConfigDto command) {
         SenderConfig config = conversionService.convert(command, SenderConfig.class);
         SenderConfig result = senderConfigService.updateSender(name, config);
         return conversionService.convert(result, SenderConfigDto.class);
