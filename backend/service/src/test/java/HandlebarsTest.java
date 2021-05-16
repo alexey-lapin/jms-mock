@@ -12,28 +12,28 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class Test2 {
+public class HandlebarsTest {
 
     @Test
     void test1() throws Exception {
-        Path path = Paths.get(getClass().getClassLoader()
-                .getResource("t1.json").toURI());
+        Path templatePath = Paths.get(getClass().getClassLoader()
+                .getResource("template-1.json").toURI());
 
-        String input = Files.lines(path).collect(Collectors.joining("\n"));
-        System.out.println(input);
+        String templateContent = Files.lines(templatePath).collect(Collectors.joining("\n"));
+        System.out.println(templateContent);
 
-        Path path2 = Paths.get(getClass().getClassLoader()
-                .getResource("input1.json").toURI());
+        Path inputPath = Paths.get(getClass().getClassLoader()
+                .getResource("input-1.json").toURI());
 
-        String input2 = Files.lines(path2).collect(Collectors.joining("\n"));
+        String inputContent = Files.lines(inputPath).collect(Collectors.joining("\n"));
 
         Map<Object, Object> map = new HashMap<>();
-        map.put("inbound", MessageBuilder.withPayload(input2).build());
+        map.put("inbound", MessageBuilder.withPayload(inputContent).build());
 
         Handlebars handlebars = new Handlebars();
         handlebars.with(EscapingStrategy.NOOP);
         handlebars.registerHelper("jsonPath", new JsonPathHelper());
-        Template template = handlebars.compileInline(input);
+        Template template = handlebars.compileInline(templateContent);
         String output = template.apply(map);
 
         System.out.println(output);
