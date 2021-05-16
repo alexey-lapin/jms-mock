@@ -90,12 +90,15 @@ public class ReceiverConfigService {
         repository.deleteByName(name);
     }
 
-    public void toggle(String name) {
-        repository.findByName(name).orElseThrow(() ->
+    @Transactional
+    public ReceiverConfig toggle(String name) {
+        ReceiverConfig receiverConfig = repository.findByName(name).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND,
                         String.format("receiver [name=%s] does not exist", name)));
 
-        jmsListenerService.toggle(name);
+        receiverConfig.setEnabled(!receiverConfig.isEnabled());
+
+        return repository.save(receiverConfig);
     }
 
     private Set<Mock> findUsages(Collection<Mock> mocks, String receiverName) {

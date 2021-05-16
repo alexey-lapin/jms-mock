@@ -31,6 +31,8 @@ public class ReceiverConfig implements ParametrizedConfig {
 
     private String name;
 
+    private boolean isEnabled;
+
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "config_id")
     private Set<Parameter> parameters;
