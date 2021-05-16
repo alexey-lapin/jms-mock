@@ -8,9 +8,11 @@ import jmsmock.application.template.TemplateEvaluationContext;
 import jmsmock.domain.model.Event;
 import jmsmock.domain.model.NodeConfig;
 import jmsmock.service.EventService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.Expression;
 import org.springframework.expression.spel.support.SimpleEvaluationContext;
+import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.support.MessageBuilder;
@@ -21,6 +23,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
 
+@Slf4j
 public class TemplateHandlerNode extends AbstractNode implements Handler {
 
     public static final String PARAMETER_PAYLOAD_TEMPLATE = "payload-template";
@@ -44,21 +47,18 @@ public class TemplateHandlerNode extends AbstractNode implements Handler {
     public Flux<Context> handle(Flux<Context> stream) {
         return stream.map(context -> {
             // could be other key - make configurable
-            Optional<Message<String>> inboundOptional = context.getAttribute(Context.INBOUND_MESSAGE);
-            if (inboundOptional.isPresent()) {
-                try {
-                    TemplateEvaluationContext templateEvaluationContext = new TemplateEvaluationContext(inboundOptional.get());
-                    SimpleEvaluationContext evaluationContext = SimpleEvaluationContext.forReadOnlyDataBinding()
-                            .withRootObject(templateEvaluationContext)
-                            .build();
-                    String payload = renderPayload(templateEvaluationContext);
-                    MessageHeaders headers = renderHeaders(evaluationContext);
-                    Message<String> outbound = MessageBuilder.createMessage(payload, headers);
-                    // could be other key - make configurable
-                    context.setAttribute(Context.OUTBOUND_MESSAGE, outbound);
-                } catch (Exception ex) {
-                    eventService.emit(Event.error(ex.getMessage()));
-                }
+            Message<String> inbound = context.getAttribute(Context.INBOUND_MESSAGE).orElse(null);
+            try {
+                TemplateEvaluationContext templateEvaluationContext = new TemplateEvaluationContext(inbound);
+                StandardEvaluationContext evaluationContext = new StandardEvaluationContext(templateEvaluationContext);
+                String payload = renderPayload(templateEvaluationContext);
+                MessageHeaders headers = renderHeaders(evaluationContext);
+                Message<String> outbound = MessageBuilder.createMessage(payload, headers);
+                // could be other key - make configurable
+                context.setAttribute(Context.OUTBOUND_MESSAGE, outbound);
+            } catch (Exception ex) {
+                log.error("failed to render template", ex);
+                eventService.emit(Event.error(ex.getMessage()));
             }
             return context;
         });

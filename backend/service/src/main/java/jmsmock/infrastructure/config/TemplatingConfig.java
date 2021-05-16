@@ -1,6 +1,9 @@
 package jmsmock.infrastructure.config;
 
+import com.github.jknack.handlebars.EscapingStrategy;
 import com.github.jknack.handlebars.Handlebars;
+import jmsmock.service.handlebars.JsonPathHelper;
+import jmsmock.service.handlebars.RandomValueHelper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.expression.ExpressionParser;
@@ -16,7 +19,11 @@ public class TemplatingConfig {
     
     @Bean
     Handlebars handlebars() {
-        return new Handlebars();
+        Handlebars handlebars = new Handlebars();
+        handlebars.with(EscapingStrategy.NOOP);
+        handlebars.registerHelper("jsonPath", new JsonPathHelper());
+        handlebars.registerHelper("random", new RandomValueHelper());
+        return handlebars;
     }
 
 }

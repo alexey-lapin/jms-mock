@@ -40,7 +40,9 @@ public class SenderHandlerNode extends AbstractNode implements Handler {
             Optional<Message<String>> outboundMessage = context.getAttribute(Context.OUTBOUND_MESSAGE);
             if (outboundMessage.isPresent()) {
                 try {
-                    jmsTemplate.convertAndSend(destination, outboundMessage.get());
+                    Message<String> outbound = outboundMessage.get();
+                    log.info(outbound.toString());
+                    jmsTemplate.convertAndSend(destination, outbound);
                 } catch (Exception ex) {
                     log.error("failed to send message", ex);
                 }

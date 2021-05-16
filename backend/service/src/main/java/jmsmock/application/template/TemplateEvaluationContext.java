@@ -8,6 +8,6 @@ import org.springframework.messaging.Message;
 @Getter
 public class TemplateEvaluationContext {
 
-    private final Message inbound;
+    private final Message<?> inbound;
 
 }

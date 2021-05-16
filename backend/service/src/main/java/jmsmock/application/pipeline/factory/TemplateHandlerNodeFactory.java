@@ -39,7 +39,7 @@ public class TemplateHandlerNodeFactory implements NodeFactory {
 
         Map<String, Expression> headerExpressions = nodeConfig.getParameters().stream()
                 .filter(TemplateHandlerNodeFactory::isHeaderExpressionParam)
-                .collect(Collectors.toMap(Parameter::getKey, this::compileHeaderExpression));
+                .collect(Collectors.toMap(this::extractHeaderName, this::compileHeaderExpression));
 
         return new TemplateHandlerNode(nodeConfig, eventService, payloadTemplate, headerExpressions);
     }
@@ -56,6 +56,10 @@ public class TemplateHandlerNodeFactory implements NodeFactory {
     private static boolean isHeaderExpressionParam(Parameter parameter) {
         return parameter.getKey() != null
                 && parameter.getKey().startsWith(TemplateHandlerNode.PARAMETER_HEADER_EXPRESSION_PREFIX);
+    }
+
+    private String extractHeaderName(Parameter parameter) {
+        return parameter.getKey().replace(TemplateHandlerNode.PARAMETER_HEADER_EXPRESSION_PREFIX, "");
     }
 
 }
