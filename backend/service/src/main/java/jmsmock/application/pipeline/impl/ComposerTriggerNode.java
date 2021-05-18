@@ -13,7 +13,7 @@ import reactor.core.publisher.Sinks;
 @Slf4j
 public class ComposerTriggerNode extends AbstractNode implements Trigger, Triggerable {
 
-    private final Sinks.Many<Context> sink = Sinks.many().unicast().onBackpressureBuffer();
+    private final Sinks.Many<Context> sink = Sinks.many().multicast().directBestEffort();
 
     private final EventService eventService;
 

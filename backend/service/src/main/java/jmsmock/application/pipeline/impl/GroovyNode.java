@@ -20,11 +20,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
-public class GroovyHandlerNode extends AbstractNode implements Handler, Trigger, Triggerable {
+public class GroovyNode extends AbstractNode implements Handler, Trigger, Triggerable {
 
     public static final String PARAMETER_SCRIPT = "script";
 
-    private final Sinks.Many<Context> sink = Sinks.many().unicast().onBackpressureBuffer();
+    private final Sinks.Many<Context> sink = Sinks.many().multicast().directBestEffort();
 
     private final EventService eventService;
 
@@ -32,10 +32,10 @@ public class GroovyHandlerNode extends AbstractNode implements Handler, Trigger,
 
     private final ScriptSource scriptSource;
 
-    public GroovyHandlerNode(NodeConfig nodeConfig,
-                             EventService eventService,
-                             ScriptEvaluator scriptEvaluator,
-                             ScriptSource scriptSource) {
+    public GroovyNode(NodeConfig nodeConfig,
+                      EventService eventService,
+                      ScriptEvaluator scriptEvaluator,
+                      ScriptSource scriptSource) {
         super(nodeConfig);
         this.eventService = eventService;
         this.scriptEvaluator = scriptEvaluator;

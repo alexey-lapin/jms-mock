@@ -2,7 +2,7 @@ package jmsmock.application.pipeline.factory;
 
 import jmsmock.domain.model.NodeConfig;
 import jmsmock.application.pipeline.Node;
-import jmsmock.application.pipeline.impl.GroovyHandlerNode;
+import jmsmock.application.pipeline.impl.GroovyNode;
 import jmsmock.service.EventService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scripting.ScriptEvaluator;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
 @Component
-public class GroovyHandlerNodeFactory implements NodeFactory {
+public class GroovyNodeFactory implements NodeFactory {
 
     private final ScriptEvaluator scriptEvaluator;
 
@@ -19,10 +19,10 @@ public class GroovyHandlerNodeFactory implements NodeFactory {
 
     @Override
     public Node create(NodeConfig nodeConfig) {
-        String script = nodeConfig.getParameter(GroovyHandlerNode.PARAMETER_SCRIPT)
-                .orElseThrow(() -> new RuntimeException(GroovyHandlerNode.PARAMETER_SCRIPT + "is required"));
+        String script = nodeConfig.getParameter(GroovyNode.PARAMETER_SCRIPT)
+                .orElseThrow(() -> new RuntimeException(GroovyNode.PARAMETER_SCRIPT + "is required"));
 
-        return new GroovyHandlerNode(nodeConfig, eventService, scriptEvaluator, new StaticScriptSource(script));
+        return new GroovyNode(nodeConfig, eventService, scriptEvaluator, new StaticScriptSource(script));
     }
 
 }
