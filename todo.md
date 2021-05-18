@@ -26,7 +26,7 @@ backend:
 - [x] interval trigger
 - [ ] inline sender
 - [x] multiple mock can share same trigger
-- [ ] template support
+- [x] template support
 - [ ] item (mock, connector, destination) description
 - [ ] item (mock, connector, destination) labels
 - [ ] history support (composer, receiver, sender)
