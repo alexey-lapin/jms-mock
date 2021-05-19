@@ -1,8 +1,11 @@
 plugins {
+    id("com.diffplug.spotless")
     id("com.github.ben-manes.versions")
 }
 
 allprojects {
+    apply(plugin = "com.diffplug.spotless")
+
     group = "com.github.alexey-lapin.jms-mock"
     version = "0.1.3"
 }
