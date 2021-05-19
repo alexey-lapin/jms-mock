@@ -1,6 +1,5 @@
 package jmsmock.api.dto;
 
-import jmsmock.domain.model.EventType;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -13,7 +12,7 @@ public class EventDto {
 
     private UUID id;
     private ZonedDateTime createdAt;
-    private EventType eventType;
+    private String eventType;
     private String message;
 
 }

@@ -5,6 +5,7 @@ import jmsmock.api.dto.NodeConfigDto;
 import jmsmock.api.dto.ParameterDto;
 import jmsmock.domain.model.MockConfig;
 import jmsmock.domain.model.NodeConfig;
+import jmsmock.domain.model.NodeType;
 import jmsmock.domain.model.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Lazy;
@@ -12,6 +13,7 @@ import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -45,7 +47,7 @@ public class MockConfigConverter {
 
             NodeConfig nodeConfig = new NodeConfig();
             nodeConfig.setId(UUID.randomUUID());
-            nodeConfig.setType(source.getType());
+            nodeConfig.setType(NodeType.valueOf(source.getType().toUpperCase()));
             nodeConfig.setPosition(position);
             nodeConfig.setParameters(parameters);
             return nodeConfig;
@@ -80,7 +82,7 @@ public class MockConfigConverter {
 
             return NodeConfigDto.builder()
                     .id(source.getId())
-                    .type(source.getType())
+                    .type(source.getType().getName())
                     .parameters(parameters)
                     .build();
         }

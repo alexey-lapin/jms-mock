@@ -1,6 +1,6 @@
 plugins {
     java
-    id("com.github.ben-manes.versions")
+
     id("io.spring.dependency-management")
     id("org.springframework.boot")
 }
@@ -8,6 +8,8 @@ plugins {
 dependencies {
     annotationProcessor("org.projectlombok:lombok")
     compileOnly("org.projectlombok:lombok")
+
+    implementation(parent!!.project("api"))
 
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 //    implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
@@ -27,9 +29,6 @@ dependencies {
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("io.projectreactor:reactor-test:3.4.5")
-//    testImplementation("org.junit.jupiter:junit-jupiter-api:5.6.0")
-//    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
-
 }
 
 tasks {

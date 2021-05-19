@@ -12,7 +12,7 @@ public class EventConverter implements ModelConverter<Event, EventDto> {
         return EventDto.builder()
                 .id(source.getId())
                 .createdAt(source.getCreatedAt())
-                .eventType(source.getType())
+                .eventType(source.getType().name())
                 .message(source.getMessage())
                 .build();
     }

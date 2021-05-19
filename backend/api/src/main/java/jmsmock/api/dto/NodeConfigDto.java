@@ -1,6 +1,5 @@
 package jmsmock.api.dto;
 
-import jmsmock.domain.model.NodeType;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -15,7 +14,7 @@ public class NodeConfigDto {
     private UUID id;
 
     @NotNull
-    private NodeType type;
+    private String type;
 
     @NotNull
     private List<ParameterDto> parameters;

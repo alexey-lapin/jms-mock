@@ -19,7 +19,7 @@ public class CompositeNodeFactory implements NodeFactory {
 
     private final NodeFactory receiverTriggerNodeFactory;
     private final NodeFactory senderHandlerNodeFactory;
-    private final NodeFactory groovyHandlerNodeFactory;
+    private final NodeFactory groovyNodeFactory;
     private final NodeFactory templateHandlerNodeFactory;
 
     private final EventService eventService;
@@ -35,7 +35,7 @@ public class CompositeNodeFactory implements NodeFactory {
             case INTERVAL:
                 return new IntervalTriggerNode(nodeConfig, eventService);
             case GROOVY:
-                return groovyHandlerNodeFactory.create(nodeConfig);
+                return groovyNodeFactory.create(nodeConfig);
             case LOGGER:
                 return new LoggingHandlerNode(nodeConfig);
             case RECEIVER:
