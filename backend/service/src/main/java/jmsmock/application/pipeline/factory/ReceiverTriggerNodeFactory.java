@@ -29,7 +29,7 @@ import jmsmock.application.pipeline.impl.ReceiverTriggerNode;
 import jmsmock.domain.model.NodeConfig;
 import jmsmock.domain.model.ReceiverConfig;
 import jmsmock.service.EventService;
-import jmsmock.service.ReceiverConfigService;
+import jmsmock.service.config.ReceiverConfigService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jms.config.JmsListenerContainerFactory;
 import org.springframework.jms.config.JmsListenerEndpointRegistry;

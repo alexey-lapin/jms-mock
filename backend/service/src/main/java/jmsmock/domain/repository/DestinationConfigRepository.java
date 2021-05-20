@@ -23,5 +23,19 @@
  */
 package jmsmock.domain.repository;
 
+import jmsmock.domain.model.DestinationConfig;
+
+import java.util.List;
+import java.util.Optional;
+
 public interface DestinationConfigRepository {
+
+    List<DestinationConfig> findAll();
+
+    Optional<DestinationConfig> findByName(String name);
+
+    DestinationConfig save(DestinationConfig config);
+
+    void deleteByName(String name);
+
 }

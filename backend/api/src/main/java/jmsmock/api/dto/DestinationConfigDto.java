@@ -23,5 +23,19 @@
  */
 package jmsmock.api.dto;
 
-public class DestinationDto {
+import lombok.Builder;
+import lombok.Getter;
+
+import javax.validation.constraints.NotBlank;
+import java.util.UUID;
+
+@Builder
+@Getter
+public class DestinationConfigDto {
+
+    private UUID id;
+
+    @NotBlank
+    private String name;
+
 }

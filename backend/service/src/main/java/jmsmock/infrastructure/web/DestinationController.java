@@ -23,10 +23,12 @@
  */
 package jmsmock.infrastructure.web;
 
-import jmsmock.api.dto.BrowseDto;
-import jmsmock.api.dto.DestinationDto;
+import jmsmock.api.dto.MessageDto;
+import jmsmock.api.dto.DestinationConfigDto;
 import jmsmock.api.operation.DestinationOperations;
+import jmsmock.domain.model.DestinationConfig;
 import jmsmock.service.DestinationBrowser;
+import jmsmock.service.config.DestinationConfigService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,29 +42,51 @@ import java.util.stream.Collectors;
 @RequestMapping("/api")
 public class DestinationController implements DestinationOperations {
 
+    private final DestinationConfigService destinationConfigService;
     private final DestinationBrowser destinationBrowser;
     private final ConversionService conversionService;
 
     @Override
-    public List<DestinationDto> findAll() {
-        return null;
+    public List<DestinationConfigDto> findAll() {
+        return destinationConfigService.findAll().stream()
+                .map(item -> conversionService.convert(item, DestinationConfigDto.class))
+                .collect(Collectors.toList());
     }
 
     @Override
-    public void delete(String name) {
-
+    public DestinationConfigDto createQueue(DestinationConfigDto command) {
+        DestinationConfig config = conversionService.convert(command, DestinationConfig.class);
+        DestinationConfig result = destinationConfigService.createDestination(config);
+        return conversionService.convert(result, DestinationConfigDto.class);
     }
 
     @Override
-    public List<BrowseDto> browse(String name) {
+    public DestinationConfigDto updateQueue(String name, DestinationConfigDto command) {
+        DestinationConfig config = conversionService.convert(command, DestinationConfig.class);
+        DestinationConfig result = destinationConfigService.updateDestination(name, config);
+        return conversionService.convert(result, DestinationConfigDto.class);
+    }
+
+    @Override
+    public void deleteQueue(String name) {
+        destinationConfigService.deleteDestination(name);
+    }
+
+    @Override
+    public List<MessageDto> browse(String name) {
         return destinationBrowser.browse(name).stream()
-                .map(item -> conversionService.convert(item, BrowseDto.class))
+                .map(item -> conversionService.convert(item, MessageDto.class))
                 .collect(Collectors.toList());
     }
 
     @Override
     public int count(String name) {
         return destinationBrowser.count(name);
+    }
+
+    @Override
+    public void purge(String name) {
+        destinationBrowser.purge(name);
     }
 
 }

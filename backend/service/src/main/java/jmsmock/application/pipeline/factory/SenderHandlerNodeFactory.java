@@ -23,14 +23,14 @@
  */
 package jmsmock.application.pipeline.factory;
 
-import jmsmock.domain.model.NodeConfig;
-import jmsmock.domain.model.SenderConfig;
 import jmsmock.application.pipeline.Node;
 import jmsmock.application.pipeline.impl.SenderHandlerNode;
+import jmsmock.domain.model.NodeConfig;
+import jmsmock.domain.model.SenderConfig;
 import jmsmock.service.EventService;
-import jmsmock.service.SenderConfigService;
+import jmsmock.service.config.SenderConfigService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.jms.core.JmsTemplate;
+import org.springframework.jms.core.JmsOperations;
 import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
@@ -41,7 +41,7 @@ public class SenderHandlerNodeFactory implements NodeFactory {
 
     private final SenderConfigService senderConfigService;
 
-    private final JmsTemplate jmsTemplate;
+    private final JmsOperations jmsOperations;
 
     @Override
     public Node create(NodeConfig nodeConfig) {
@@ -53,7 +53,7 @@ public class SenderHandlerNodeFactory implements NodeFactory {
 
         String destination = senderConfig.getDestination();
 
-        return new SenderHandlerNode(nodeConfig, eventService, jmsTemplate, destination);
+        return new SenderHandlerNode(nodeConfig, eventService, jmsOperations, destination);
     }
 
 }

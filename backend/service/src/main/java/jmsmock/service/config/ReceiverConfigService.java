@@ -21,13 +21,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package jmsmock.service;
+package jmsmock.service.config;
 
 import jmsmock.domain.model.MockConfig;
 import jmsmock.domain.model.ReceiverConfig;
 import jmsmock.domain.model.ParametrizedConfig;
 import jmsmock.domain.repository.ReceiverConfigRepository;
 import jmsmock.application.mock.Mock;
+import jmsmock.service.JmsListenerService;
+import jmsmock.service.MockManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;

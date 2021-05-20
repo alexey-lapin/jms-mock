@@ -27,7 +27,7 @@ import jmsmock.api.dto.ReceiverConfigDto;
 import jmsmock.api.operation.ReceiverOperations;
 import jmsmock.domain.model.ReceiverConfig;
 import jmsmock.service.JmsListenerService;
-import jmsmock.service.ReceiverConfigService;
+import jmsmock.service.config.ReceiverConfigService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.web.bind.annotation.RequestMapping;

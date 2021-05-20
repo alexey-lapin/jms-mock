@@ -23,5 +23,16 @@
  */
 package jmsmock.api.dto;
 
-public class BrowseDto {
+import lombok.Builder;
+import lombok.Getter;
+
+import java.util.Map;
+
+@Builder
+@Getter
+public class MessageDto {
+
+    private Map<String, String> headers;
+    private String payload;
+
 }

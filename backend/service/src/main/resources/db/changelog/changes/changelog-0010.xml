@@ -71,4 +71,15 @@
         </createTable>
     </changeSet>
 
+    <changeSet author="al" id="06">
+        <createTable tableName="destination_config">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
 </databaseChangeLog>

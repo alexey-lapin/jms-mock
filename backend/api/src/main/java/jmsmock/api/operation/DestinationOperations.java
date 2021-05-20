@@ -23,26 +23,42 @@
  */
 package jmsmock.api.operation;
 
-import jmsmock.api.dto.BrowseDto;
-import jmsmock.api.dto.DestinationDto;
+import jmsmock.api.dto.MessageDto;
+import jmsmock.api.dto.DestinationConfigDto;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.List;
 
 public interface DestinationOperations {
 
     @GetMapping("/queues")
-    List<DestinationDto> findAll();
+    List<DestinationConfigDto> findAll();
+
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("/queues")
+    DestinationConfigDto createQueue(@RequestBody DestinationConfigDto command);
+
+    @PutMapping("/queues/{name}")
+    DestinationConfigDto updateQueue(@PathVariable String name,
+                                     @RequestBody DestinationConfigDto command);
 
     @DeleteMapping("/queues/{name}")
-    void delete(String name);
+    void deleteQueue(String name);
 
     @GetMapping("/queues/{name}/browse")
-    List<BrowseDto> browse(@PathVariable String name);
+    List<MessageDto> browse(@PathVariable String name);
 
     @GetMapping("/queues/{name}/count")
     int count(@PathVariable String name);
+
+    @PostMapping("/queues/{name}/purge")
+    void purge(@PathVariable String name);
 
 }

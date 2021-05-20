@@ -48,6 +48,4 @@ public class DestinationConfig {
 
     private String name;
 
-    private boolean isPubSub;
-
 }

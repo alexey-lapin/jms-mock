@@ -23,5 +23,16 @@
  */
 package jmsmock.infrastructure.db.jpa;
 
-public interface DataDestinationConfigRepository {
+import jmsmock.domain.model.DestinationConfig;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.Optional;
+import java.util.UUID;
+
+public interface DataDestinationConfigRepository extends JpaRepository<DestinationConfig, UUID> {
+
+    Optional<DestinationConfig> findByName(String name);
+
+    void deleteByName(String name);
+
 }

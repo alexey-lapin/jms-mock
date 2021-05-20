@@ -21,33 +21,41 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package jmsmock.infrastructure.config;
+package jmsmock.infrastructure.db.jpa;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.jms.core.JmsOperations;
-import org.springframework.jms.core.JmsTemplate;
-import org.springframework.jms.support.converter.MessageConverter;
-import org.springframework.jms.support.converter.MessagingMessageConverter;
-import org.springframework.jms.support.destination.JmsDestinationAccessor;
+import jmsmock.domain.model.DestinationConfig;
+import jmsmock.domain.repository.DestinationConfigRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Repository;
 
-import javax.jms.ConnectionFactory;
+import java.util.List;
+import java.util.Optional;
 
-@Configuration
-public class JmsConfig {
+@RequiredArgsConstructor
+@Repository
+public class JpaDestinationConfigRepositoryAdapter implements DestinationConfigRepository {
 
-    @Bean
-    MessageConverter messagingMessageConverter() {
-        return new MessagingMessageConverter();
+    private final DataDestinationConfigRepository repository;
+
+    @Override
+    public List<DestinationConfig> findAll() {
+        return repository.findAll(Sort.by("name"));
     }
 
-    @Bean
-    JmsOperations jmsTemplate(ConnectionFactory connectionFactory,
-                              MessageConverter messagingMessageConverter) {
-        JmsTemplate jmsTemplate = new JmsTemplate(connectionFactory);
-        jmsTemplate.setMessageConverter(messagingMessageConverter);
-        jmsTemplate.setReceiveTimeout(JmsDestinationAccessor.RECEIVE_TIMEOUT_NO_WAIT);
-        return jmsTemplate;
+    @Override
+    public Optional<DestinationConfig> findByName(String name) {
+        return repository.findByName(name);
+    }
+
+    @Override
+    public DestinationConfig save(DestinationConfig config) {
+        return repository.save(config);
+    }
+
+    @Override
+    public void deleteByName(String name) {
+        repository.deleteByName(name);
     }
 
 }

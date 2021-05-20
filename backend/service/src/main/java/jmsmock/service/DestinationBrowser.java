@@ -25,7 +25,8 @@ package jmsmock.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import org.springframework.jms.core.JmsTemplate;
+import org.springframework.jms.core.JmsOperations;
+import org.springframework.jms.support.converter.MessageConverter;
 import org.springframework.messaging.Message;
 import org.springframework.stereotype.Service;
 
@@ -40,14 +41,22 @@ import java.util.stream.Collectors;
 @Service
 public class DestinationBrowser {
 
-    private final JmsTemplate jmsTemplate;
+    private final MessageConverter messagingMessageConverter;
+    private final JmsOperations jmsOperations;
 
     public List<Message<String>> browse(String name) {
-        return jmsTemplate.browse(name, (session, browser) -> convertMessages(browser));
+        return jmsOperations.browse(name, (session, browser) -> convertMessages(browser));
     }
 
     public int count(String name) {
-        return jmsTemplate.browse(name, (session, browser) -> getMessageList(browser).size());
+        return jmsOperations.browse(name, (session, browser) -> getMessageList(browser).size());
+    }
+
+    public void purge(String name) {
+        javax.jms.Message message = null;
+        do {
+            message = jmsOperations.receive(name);
+        } while (message != null);
     }
 
     @SuppressWarnings("unchecked")
@@ -65,7 +74,7 @@ public class DestinationBrowser {
     @SneakyThrows
     @SuppressWarnings("unchecked")
     private Message<String> convert(javax.jms.Message jmsMessage) {
-        Object object = jmsTemplate.getMessageConverter().fromMessage(jmsMessage);
+        Object object = messagingMessageConverter.fromMessage(jmsMessage);
         return (Message<String>) object;
     }
 

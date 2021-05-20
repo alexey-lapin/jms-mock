@@ -26,7 +26,7 @@ package jmsmock.infrastructure.web;
 import jmsmock.api.dto.SenderConfigDto;
 import jmsmock.api.operation.SenderOperations;
 import jmsmock.domain.model.SenderConfig;
-import jmsmock.service.SenderConfigService;
+import jmsmock.service.config.SenderConfigService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.web.bind.annotation.RequestMapping;

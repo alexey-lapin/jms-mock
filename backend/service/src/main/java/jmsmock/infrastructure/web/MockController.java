@@ -28,7 +28,7 @@ import jmsmock.api.dto.TriggearbleSignalDto;
 import jmsmock.api.operation.MockOperations;
 import jmsmock.application.pipeline.Context;
 import jmsmock.domain.model.MockConfig;
-import jmsmock.service.MockConfigService;
+import jmsmock.service.config.MockConfigService;
 import jmsmock.service.MockManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Lazy;

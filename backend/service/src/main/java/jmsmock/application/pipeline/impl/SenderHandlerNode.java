@@ -23,14 +23,14 @@
  */
 package jmsmock.application.pipeline.impl;
 
-import jmsmock.domain.model.Event;
-import jmsmock.domain.model.NodeConfig;
 import jmsmock.application.pipeline.AbstractNode;
 import jmsmock.application.pipeline.Context;
 import jmsmock.application.pipeline.Handler;
+import jmsmock.domain.model.Event;
+import jmsmock.domain.model.NodeConfig;
 import jmsmock.service.EventService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.jms.core.JmsTemplate;
+import org.springframework.jms.core.JmsOperations;
 import org.springframework.messaging.Message;
 import reactor.core.publisher.Flux;
 
@@ -43,17 +43,17 @@ public class SenderHandlerNode extends AbstractNode implements Handler {
 
     private final EventService eventService;
 
-    private final JmsTemplate jmsTemplate;
+    private final JmsOperations jmsOperations;
 
     private final String destination;
 
     public SenderHandlerNode(NodeConfig nodeConfig,
                              EventService eventService,
-                             JmsTemplate jmsTemplate,
+                             JmsOperations jmsOperations,
                              String destination) {
         super(nodeConfig);
         this.eventService = eventService;
-        this.jmsTemplate = jmsTemplate;
+        this.jmsOperations = jmsOperations;
         this.destination = destination;
     }
 
@@ -65,7 +65,7 @@ public class SenderHandlerNode extends AbstractNode implements Handler {
                 try {
                     Message<String> outbound = outboundMessage.get();
                     log.info(outbound.toString());
-                    jmsTemplate.convertAndSend(destination, outbound);
+                    jmsOperations.convertAndSend(destination, outbound);
                 } catch (Exception ex) {
                     log.error("failed to send message", ex);
                 }

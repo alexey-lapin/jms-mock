@@ -32,6 +32,7 @@ import jmsmock.application.pipeline.Context;
 import jmsmock.application.pipeline.Node;
 import jmsmock.application.pipeline.Triggerable;
 import jmsmock.application.pipeline.factory.NodeFactory;
+import jmsmock.service.config.MockConfigService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
