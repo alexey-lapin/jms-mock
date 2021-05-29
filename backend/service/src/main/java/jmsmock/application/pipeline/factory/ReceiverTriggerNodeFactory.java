@@ -26,6 +26,7 @@ package jmsmock.application.pipeline.factory;
 import jmsmock.application.mock.CompositeMessageListener;
 import jmsmock.application.pipeline.Node;
 import jmsmock.application.pipeline.impl.ReceiverTriggerNode;
+import jmsmock.domain.model.MockConfig;
 import jmsmock.domain.model.NodeConfig;
 import jmsmock.domain.model.ReceiverConfig;
 import jmsmock.service.EventService;
@@ -52,7 +53,7 @@ public class ReceiverTriggerNodeFactory implements NodeFactory {
     private final MessageConverter messageConverter;
 
     @Override
-    public Node create(NodeConfig nodeConfig) {
+    public Node create(MockConfig mockConfig, NodeConfig nodeConfig) {
         String receiverName = nodeConfig.getParameter(ReceiverTriggerNode.PARAMETER_RECEIVER_NAME)
                 .orElseThrow(() -> new RuntimeException(ReceiverTriggerNode.PARAMETER_RECEIVER_NAME + " is required"));
 

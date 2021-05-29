@@ -23,6 +23,7 @@
  */
 package jmsmock.api.operation;
 
+import jmsmock.api.dto.MessageDto;
 import jmsmock.api.dto.MockConfigDto;
 import jmsmock.api.dto.TriggearbleSignalDto;
 import org.springframework.http.HttpStatus;
@@ -58,5 +59,11 @@ public interface MockOperations {
 
     @PostMapping("/mocks/{name}/trigger")
     void triggerMock(@PathVariable String name, @Valid @RequestBody TriggearbleSignalDto command);
+
+    @GetMapping("/mocks/{name}/trigger/history")
+    List<MessageDto> getTriggerHistory(@PathVariable String name);
+
+    @DeleteMapping("/mocks/{name}/trigger/history")
+    void deleteTriggerHistory(@PathVariable String name);
 
 }

@@ -26,13 +26,13 @@ package jmsmock.api.dto;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.util.Map;
+import java.util.SortedMap;
 
 @Builder
 @Getter
 public class MessageDto {
 
-    private Map<String, String> headers;
+    private SortedMap<String, String> headers;
     private String payload;
 
 }

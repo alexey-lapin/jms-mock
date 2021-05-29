@@ -27,11 +27,21 @@ import jmsmock.application.pipeline.AbstractNode;
 import jmsmock.application.pipeline.Context;
 import jmsmock.application.pipeline.Trigger;
 import jmsmock.application.pipeline.Triggerable;
+import jmsmock.domain.model.MessageHistoryItem;
+import jmsmock.domain.model.MessageHistoryItemHeader;
+import jmsmock.domain.model.MockConfig;
 import jmsmock.domain.model.NodeConfig;
+import jmsmock.domain.repository.MessageHistoryItemRepository;
 import jmsmock.service.EventService;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Sinks;
+
+import java.time.ZonedDateTime;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Slf4j
 public class ComposerTriggerNode extends AbstractNode implements Trigger, Triggerable {
@@ -39,10 +49,18 @@ public class ComposerTriggerNode extends AbstractNode implements Trigger, Trigge
     private final Sinks.Many<Context> sink = Sinks.many().multicast().directBestEffort();
 
     private final EventService eventService;
+    private final MessageHistoryItemRepository messageHistoryItemRepository;
 
-    public ComposerTriggerNode(NodeConfig nodeConfig, EventService eventService) {
+    private final String mockName;
+
+    public ComposerTriggerNode(MockConfig mockConfig,
+                               NodeConfig nodeConfig,
+                               EventService eventService,
+                               MessageHistoryItemRepository messageHistoryItemRepository) {
         super(nodeConfig);
         this.eventService = eventService;
+        this.messageHistoryItemRepository = messageHistoryItemRepository;
+        this.mockName = mockConfig.getName();
     }
 
     @Override
@@ -52,7 +70,27 @@ public class ComposerTriggerNode extends AbstractNode implements Trigger, Trigge
 
     @Override
     public void trigger(Context context) {
+        saveHistory(context);
         sink.emitNext(context, Sinks.EmitFailureHandler.FAIL_FAST);
+    }
+
+    private void saveHistory(Context context) {
+        context.getAttribute(Context.OUTBOUND_MESSAGE).ifPresent(inbound -> {
+            Set<MessageHistoryItemHeader> collect = inbound.getHeaders().entrySet().stream()
+                    .map(item -> new MessageHistoryItemHeader(UUID.randomUUID(), item.getKey(), item.getValue().toString()))
+                    .collect(Collectors.toSet());
+            MessageHistoryItem messageHistoryItem = new MessageHistoryItem(
+                    UUID.randomUUID(),
+                    inbound.getPayload(),
+                    ZonedDateTime.now(),
+                    mockName,
+                    new TreeSet<>(collect));
+            try {
+                messageHistoryItemRepository.save(messageHistoryItem);
+            } catch (Exception ex) {
+                log.error("failed to save history", ex);
+            }
+        });
     }
 
 }

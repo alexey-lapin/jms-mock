@@ -23,6 +23,7 @@
  */
 package jmsmock.application.pipeline.factory;
 
+import jmsmock.domain.model.MockConfig;
 import jmsmock.domain.model.NodeConfig;
 import jmsmock.application.pipeline.Node;
 import jmsmock.application.pipeline.impl.GroovyNode;
@@ -41,7 +42,7 @@ public class GroovyNodeFactory implements NodeFactory {
     private final EventService eventService;
 
     @Override
-    public Node create(NodeConfig nodeConfig) {
+    public Node create(MockConfig mockConfig, NodeConfig nodeConfig) {
         String script = nodeConfig.getParameter(GroovyNode.PARAMETER_SCRIPT)
                 .orElseThrow(() -> new RuntimeException(GroovyNode.PARAMETER_SCRIPT + "is required"));
 

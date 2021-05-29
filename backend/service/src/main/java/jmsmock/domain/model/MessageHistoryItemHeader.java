@@ -18,12 +18,17 @@ import java.util.UUID;
 @Setter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
-public class HistoryMessage {
+public class MessageHistoryItemHeader implements Comparable<MessageHistoryItemHeader> {
 
+    @EqualsAndHashCode.Include
     @Id
     private UUID id;
-    private String payload;
-    private ZonedDateTime createdAt;
-    private String referenceKey;
+    private String key;
+    private String value;
+
+    @Override
+    public int compareTo(MessageHistoryItemHeader o) {
+        return this.key.compareTo(o.key);
+    }
 
 }

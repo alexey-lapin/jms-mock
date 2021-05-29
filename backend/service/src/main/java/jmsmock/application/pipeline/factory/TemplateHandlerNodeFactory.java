@@ -27,6 +27,7 @@ import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Template;
 import jmsmock.application.pipeline.Node;
 import jmsmock.application.pipeline.impl.TemplateHandlerNode;
+import jmsmock.domain.model.MockConfig;
 import jmsmock.domain.model.NodeConfig;
 import jmsmock.domain.model.Parameter;
 import jmsmock.service.EventService;
@@ -54,7 +55,7 @@ public class TemplateHandlerNodeFactory implements NodeFactory {
     private final Handlebars handlebars;
 
     @Override
-    public Node create(NodeConfig nodeConfig) {
+    public Node create(MockConfig mockConfig, NodeConfig nodeConfig) {
         String payloadTemplateInput = nodeConfig.getParameter(TemplateHandlerNode.PARAMETER_PAYLOAD_TEMPLATE)
                 .orElseThrow(() -> new RuntimeException(TemplateHandlerNode.PARAMETER_PAYLOAD_TEMPLATE + " is required"));
 

@@ -92,7 +92,7 @@ public class MockManager {
         Node head = null;
         Node previous = null;
         for (NodeConfig nodeConfig : mockConfig.getNodes()) {
-            Node node = nodeFactory.create(nodeConfig);
+            Node node = nodeFactory.create(mockConfig, nodeConfig);
             if (head == null) {
                 head = node;
             }

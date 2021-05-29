@@ -25,6 +25,7 @@ package jmsmock.application.pipeline.factory;
 
 import jmsmock.application.pipeline.Node;
 import jmsmock.application.pipeline.impl.SenderHandlerNode;
+import jmsmock.domain.model.MockConfig;
 import jmsmock.domain.model.NodeConfig;
 import jmsmock.domain.model.SenderConfig;
 import jmsmock.service.EventService;
@@ -44,7 +45,7 @@ public class SenderHandlerNodeFactory implements NodeFactory {
     private final JmsOperations jmsOperations;
 
     @Override
-    public Node create(NodeConfig nodeConfig) {
+    public Node create(MockConfig mockConfig, NodeConfig nodeConfig) {
         String senderName = nodeConfig.getParameter(SenderHandlerNode.PARAMETER_SENDER_NAME)
                 .orElseThrow(() -> new RuntimeException(SenderHandlerNode.PARAMETER_SENDER_NAME + " is required"));
 

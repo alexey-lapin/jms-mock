@@ -28,6 +28,7 @@ import jmsmock.api.dto.TriggearbleSignalDto;
 import jmsmock.application.pipeline.Context;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
+import org.springframework.messaging.support.MessageHeaderAccessor;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
@@ -46,7 +47,9 @@ public class ContextConverter implements ModelConverter<TriggearbleSignalDto, Co
         Context context = new Context();
 
         if (payload != null) {
-            Message<String> message = MessageBuilder.withPayload(payload).copyHeaders(parameters).build();
+            MessageHeaderAccessor messageHeaderAccessor = new MessageHeaderAccessor();
+            messageHeaderAccessor.copyHeaders(parameters);
+            Message<String> message = MessageBuilder.createMessage(payload, messageHeaderAccessor.getMessageHeaders());
             context.setAttribute(Context.OUTBOUND_MESSAGE, message);
         }
 

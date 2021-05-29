@@ -23,13 +23,15 @@
  */
 package jmsmock.infrastructure.web;
 
+import jmsmock.api.dto.MessageDto;
 import jmsmock.api.dto.MockConfigDto;
 import jmsmock.api.dto.TriggearbleSignalDto;
 import jmsmock.api.operation.MockOperations;
 import jmsmock.application.pipeline.Context;
 import jmsmock.domain.model.MockConfig;
-import jmsmock.service.config.MockConfigService;
+import jmsmock.domain.repository.MessageHistoryItemRepository;
 import jmsmock.service.MockManager;
+import jmsmock.service.config.MockConfigService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.core.convert.ConversionService;
@@ -48,6 +50,8 @@ public class MockController implements MockOperations {
     private final MockConfigService mockConfigService;
 
     private final ConversionService conversionService;
+
+    private final MessageHistoryItemRepository messageHistoryItemRepository;
 
     @Lazy
     private final MockManager mockManager;
@@ -89,6 +93,18 @@ public class MockController implements MockOperations {
     public void triggerMock(String name, @Valid TriggearbleSignalDto command) {
         Context context = conversionService.convert(command, Context.class);
         mockManager.triggerMock(name, context);
+    }
+
+    @Override
+    public List<MessageDto> getTriggerHistory(String name) {
+        return messageHistoryItemRepository.findAllByReferenceKey(name).stream()
+                .map(item -> conversionService.convert(item, MessageDto.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public void deleteTriggerHistory(String name) {
+        messageHistoryItemRepository.deleteAllByReferenceKey(name);
     }
 
 }

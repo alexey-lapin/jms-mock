@@ -49,8 +49,9 @@ public interface DestinationOperations {
     DestinationConfigDto updateQueue(@PathVariable String name,
                                      @RequestBody DestinationConfigDto command);
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/queues/{name}")
-    void deleteQueue(String name);
+    void deleteQueue(@PathVariable String name);
 
     @GetMapping("/queues/{name}/browse")
     List<MessageDto> browse(@PathVariable String name);
