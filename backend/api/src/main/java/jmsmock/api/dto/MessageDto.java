@@ -26,6 +26,7 @@ package jmsmock.api.dto;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.ZonedDateTime;
 import java.util.SortedMap;
 
 @Builder
@@ -34,5 +35,6 @@ public class MessageDto {
 
     private SortedMap<String, String> headers;
     private String payload;
+    private ZonedDateTime createdAt;
 
 }

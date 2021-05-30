@@ -21,6 +21,7 @@ public class HistoryMessageConverter implements ModelConverter<MessageHistoryIte
                                 (a, b) -> b,
                                 TreeMap::new)))
                 .payload(source.getPayload())
+                .createdAt(source.getCreatedAt())
                 .build();
     }
 

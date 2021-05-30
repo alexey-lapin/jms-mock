@@ -3,6 +3,7 @@ package jmsmock.infrastructure.db.jpa;
 import jmsmock.domain.model.MessageHistoryItem;
 import jmsmock.domain.repository.MessageHistoryItemRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
@@ -21,7 +22,7 @@ public class JpsMessageHistoryItemRepositoryAdapter implements MessageHistoryIte
 
     @Override
     public List<MessageHistoryItem> findAllByReferenceKey(String referenceKey) {
-        return repository.findAllByReferenceKey(referenceKey);
+        return repository.findAllByReferenceKey(referenceKey, Sort.by(Sort.Direction.DESC, "createdAt"));
     }
 
     @Transactional
