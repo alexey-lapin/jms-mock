@@ -7,7 +7,9 @@ frontend:
 - [ ] refactor to use some UI component library 
 - [ ] composer node - headers (templatable)
 - [ ] composer node - payload (templatable)
-- [ ] composer node - history
+- [x] composer node - history
+- [ ] composer node - starred history messages in local storage
+- [ ] composer node - overwrite identical history messages?
 
 backend:
 - [ ] refactor to reactive stack
@@ -17,7 +19,8 @@ backend:
 - [x] config h2
 - [x] config ping events
 - [ ] config mq properties
-- [ ] browse queues
+- [x] browse queues
+- [x] purge queues
 - [x] enable/disable receivers
 - [x] enable/disable mocks
 - [x] config sse (https://serverfault.com/questions/801628/for-server-sent-events-sse-what-nginx-proxy-configuration-is-appropriate)
@@ -29,5 +32,6 @@ backend:
 - [x] template support
 - [ ] item (mock, connector, destination) description
 - [ ] item (mock, connector, destination) labels
-- [ ] history support (composer, receiver, sender)
+- [x] history support (composer)
+- [ ] history support (receiver, sender)
 - [ ] metrics
