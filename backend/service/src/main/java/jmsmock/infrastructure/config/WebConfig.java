@@ -24,22 +24,60 @@
 package jmsmock.infrastructure.config;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.resource.TransformedResource;
+
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.UncheckedIOException;
+import java.nio.charset.StandardCharsets;
 
 @Slf4j
 @Component
 public class WebConfig implements WebMvcConfigurer {
 
+    public static final String PUBLIC_PATH_REPLACE = "<PUBLIC_PATH_REPLACE>";
+    public static final String API_BASE_PATH_REPLACE = "<API_BASE_PATH_REPLACE>";
+
+    @Value("${ui.public-path:}")
+    private String publicPath;
+
+    @Value("${ui.api-base-path:/api}")
+    private String apiBasePath;
+
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("index.html")
+        registry.addResourceHandler("/index.html")
+                .addResourceLocations("classpath:/public/index.html")
                 .resourceChain(true)
                 .addTransformer((request, resource, transformerChain) -> {
-                    log.info("logg!!");
-                    return resource;
+                    String content = readResourceToString(resource);
+                    content = content.replaceAll(PUBLIC_PATH_REPLACE, publicPath);
+                    return new TransformedResource(resource, content.getBytes());
                 });
+        registry.addResourceHandler("/js/app.*.js")
+                .addResourceLocations("classpath:/public/js/")
+                .resourceChain(true)
+                .addTransformer((request, resource, transformerChain) -> {
+                    String content = readResourceToString(resource);
+                    content = content.replaceAll(PUBLIC_PATH_REPLACE, publicPath);
+                    content = content.replaceAll(API_BASE_PATH_REPLACE, apiBasePath);
+                    return new TransformedResource(resource, content.getBytes());
+                });
+    }
+
+    private static String readResourceToString(Resource resource) {
+        try (Reader reader = new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8)) {
+            return FileCopyUtils.copyToString(reader);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 
 }

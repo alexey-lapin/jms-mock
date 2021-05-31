@@ -32,9 +32,16 @@ dependencies {
 }
 
 tasks {
+    val npmTask = rootProject.project("frontend").tasks["npmRunBuild"]
 
-    bootJar {
-        archiveFileName.set("${rootProject.name}.${archiveExtension.get()}")
+    register<Copy>("copyFrontend") {
+        dependsOn(npmTask)
+        from(npmTask.outputs.files)
+        destinationDir = file("$buildDir/resources/main/public")
     }
 
+    bootJar {
+        dependsOn("copyFrontend")
+        archiveFileName.set("${rootProject.name}.${archiveExtension.get()}")
+    }
 }

@@ -1,7 +1,3 @@
-plugins {
-    id("com.github.ben-manes.versions")
-}
-
 subprojects {
     apply(plugin = "java")
 

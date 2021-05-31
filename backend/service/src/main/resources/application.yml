@@ -12,4 +12,4 @@ app:
       enabled: true
       interval: PT15S
 
-logging.level.org.zalando.logbook: TRACE
+#logging.level.org.zalando.logbook: TRACE
