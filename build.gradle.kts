@@ -7,7 +7,7 @@ allprojects {
     apply(plugin = "com.diffplug.spotless")
 
     group = "com.github.alexey-lapin.jms-mock"
-    version = "0.1.3"
+    version = "0.3.0"
 }
 
 tasks {
