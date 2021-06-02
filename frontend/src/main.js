@@ -22,8 +22,7 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 
 const router = createRouter({
   history:
-    // eslint-disable-next-line no-constant-condition
-    "<>" === ""
+    config.ROUTER_HISTORY_MODE === "HASH"
       ? createWebHashHistory(config.PUBLIC_PATH)
       : createWebHistory(config.PUBLIC_PATH),
   routes: [

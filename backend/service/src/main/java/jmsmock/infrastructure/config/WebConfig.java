@@ -42,8 +42,10 @@ import java.nio.charset.StandardCharsets;
 @Component
 public class WebConfig implements WebMvcConfigurer {
 
-    public static final String PUBLIC_PATH_REPLACE = "<PUBLIC_PATH_REPLACE>";
     public static final String API_BASE_PATH_REPLACE = "<API_BASE_PATH_REPLACE>";
+    public static final String PUBLIC_PATH_REPLACE = "<PUBLIC_PATH_REPLACE>";
+    public static final String ROUTER_HISTORY_MODE_REPLACE = "<ROUTER_HISTORY_MODE_REPLACE>";
+    public static final String ROUTER_HISTORY_MODE_HASH = "HASH";
 
     @Value("${ui.public-path:}")
     private String publicPath;
@@ -68,6 +70,7 @@ public class WebConfig implements WebMvcConfigurer {
                     String content = readResourceToString(resource);
                     content = content.replaceAll(PUBLIC_PATH_REPLACE, publicPath);
                     content = content.replaceAll(API_BASE_PATH_REPLACE, apiBasePath);
+                    content = content.replaceAll(ROUTER_HISTORY_MODE_REPLACE, ROUTER_HISTORY_MODE_HASH);
                     return new TransformedResource(resource, content.getBytes());
                 });
     }
