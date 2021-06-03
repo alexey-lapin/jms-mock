@@ -50,7 +50,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Value("${ui.public-path:}")
     private String publicPath;
 
-    @Value("${ui.api-base-path:/api}")
+    @Value("${ui.api-base-path:${ui.public-path:}/api}")
     private String apiBasePath;
 
     @Override

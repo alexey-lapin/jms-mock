@@ -11,5 +11,3 @@ app:
     ping:
       enabled: true
       interval: PT15S
-
-#logging.level.org.zalando.logbook: TRACE
