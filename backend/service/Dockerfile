@@ -1,6 +1,6 @@
 FROM openjdk:8-jre-alpine as builder
 WORKDIR /app
-COPY build/libs/jms-mock.jar jms-mock.jar
+COPY build/libs/jms-mock-*.jar jms-mock.jar
 RUN java -Djarmode=layertools -jar jms-mock.jar extract
 
 FROM openjdk:8-jre-alpine

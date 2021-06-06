@@ -41,6 +41,6 @@ tasks {
 
     bootJar {
         dependsOn("copyFrontend")
-        archiveFileName.set("${rootProject.name}.${archiveExtension.get()}")
+        archiveFileName.set("${rootProject.name}-${archiveVersion.get()}.${archiveExtension.get()}")
     }
 }
