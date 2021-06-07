@@ -8,6 +8,7 @@ pluginManagement {
     }
 }
 rootProject.name = "jms-mock"
+include(":docs")
 include(":frontend")
 include(":backend")
 include(":backend:api")
