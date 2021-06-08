@@ -23,11 +23,20 @@
  */
 package jmsmock;
 
+import com.ibm.mq.spring.boot.MQAutoConfiguration;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.jms.activemq.ActiveMQAutoConfiguration;
+import org.springframework.boot.autoconfigure.jms.artemis.ArtemisAutoConfiguration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @EnableScheduling
+@EnableAutoConfiguration(exclude = {
+        ActiveMQAutoConfiguration.class,
+        ArtemisAutoConfiguration.class,
+        MQAutoConfiguration.class,
+})
 @SpringBootApplication
 public class App {
 
