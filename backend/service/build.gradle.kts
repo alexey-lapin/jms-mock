@@ -16,8 +16,11 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
 //    implementation("org.springframework.boot:spring-boot-starter-webflux")
 
-    implementation("com.github.jknack:handlebars:4.2.0")
     implementation("com.ibm.mq:mq-jms-spring-boot-starter:2.4.5")
+    implementation("org.springframework.boot:spring-boot-starter-activemq")
+    implementation("org.springframework.boot:spring-boot-starter-artemis")
+
+    implementation("com.github.jknack:handlebars:4.2.0")
     implementation("com.jayway.jsonpath:json-path")
     implementation("io.projectreactor:reactor-core:3.4.5")
     implementation("org.zalando:logbook-spring-boot-starter:2.6.2")

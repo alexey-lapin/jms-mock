@@ -23,8 +23,11 @@
  */
 package jmsmock.infrastructure.config;
 
+import com.ibm.mq.spring.boot.MQAutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.jms.core.JmsOperations;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.support.converter.MessageConverter;
@@ -48,6 +51,21 @@ public class JmsConfig {
         jmsTemplate.setMessageConverter(messagingMessageConverter);
         jmsTemplate.setReceiveTimeout(JmsDestinationAccessor.RECEIVE_TIMEOUT_NO_WAIT);
         return jmsTemplate;
+    }
+
+    @ConditionalOnProperty(name = "app.jms", havingValue = "activemq", matchIfMissing = false)
+    @Import(ActiveMqConfiguration.class)
+    static class ActiveMqConfiguration {
+    }
+
+    @ConditionalOnProperty(name = "app.jms", havingValue = "artemis", matchIfMissing = false)
+    @Import(ActiveMqConfiguration.class)
+    static class ArtemisConfiguration {
+    }
+
+    @ConditionalOnProperty(name = "app.jms", havingValue = "ibm", matchIfMissing = false)
+    @Import(MQAutoConfiguration.class)
+    static class IbmMqConfiguration {
     }
 
 }
