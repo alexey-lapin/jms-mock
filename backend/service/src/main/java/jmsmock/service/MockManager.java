@@ -23,7 +23,8 @@
  */
 package jmsmock.service;
 
-import jmsmock.application.mock.CompositeMessageListener;
+import jmsmock.application.pipeline.impl.ReceiverTriggerNode;
+import jmsmock.infrastructure.endpoint.EndpointManager;
 import jmsmock.domain.model.MockConfig;
 import jmsmock.domain.model.NodeConfig;
 import jmsmock.domain.model.NodeType;
@@ -37,15 +38,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpStatus;
-import org.springframework.jms.config.JmsListenerEndpointRegistry;
-import org.springframework.jms.listener.AbstractMessageListenerContainer;
-import org.springframework.jms.listener.MessageListenerContainer;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.jms.MessageListener;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -56,12 +53,9 @@ import java.util.concurrent.ConcurrentHashMap;
 public class MockManager {
 
     private final MockConfigService mockConfigService;
-
     private final NodeFactory nodeFactory;
-
     private final EventService eventService;
-
-    private final JmsListenerEndpointRegistry jmsListenerEndpointRegistry;
+    private final EndpointManager endpointManager;
 
     private final Map<String, Mock> mocks = new ConcurrentHashMap<>();
 
@@ -113,15 +107,7 @@ public class MockManager {
 
             NodeConfig triggerNodeConfig = mock.getTrigger().getNodeConfig();
             if (triggerNodeConfig.getType() == NodeType.RECEIVER) {
-                triggerNodeConfig.getParameter("receiver-name").ifPresent(receiverName -> {
-                    MessageListenerContainer listenerContainer = jmsListenerEndpointRegistry.getListenerContainer(receiverName);
-                    if (listenerContainer instanceof AbstractMessageListenerContainer) {
-                        Object messageListener = ((AbstractMessageListenerContainer) listenerContainer).getMessageListener();
-                        if (messageListener instanceof CompositeMessageListener) {
-                            ((CompositeMessageListener) messageListener).removeChild((MessageListener) mock.getTrigger());
-                        }
-                    }
-                });
+                endpointManager.unregister((ReceiverTriggerNode) mock.getTrigger());
             }
         }
     }

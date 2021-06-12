@@ -21,40 +21,45 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package jmsmock.application.pipeline.factory;
+package jmsmock.infrastructure.endpoint;
 
-import jmsmock.application.pipeline.Node;
 import jmsmock.application.pipeline.impl.ReceiverTriggerNode;
-import jmsmock.domain.model.MockConfig;
-import jmsmock.domain.model.NodeConfig;
-import jmsmock.domain.model.ReceiverConfig;
-import jmsmock.infrastructure.endpoint.EndpointManager;
-import jmsmock.service.EventService;
-import jmsmock.service.config.ReceiverConfigService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
+@Primary
 @Component
-public class ReceiverTriggerNodeFactory implements NodeFactory {
+public class CompositeEndpointManager implements EndpointManager {
 
-    private final EventService eventService;
-    private final ReceiverConfigService receiverConfigService;
-    private final EndpointManager endpointManager;
+    private final EndpointManager jmsEndpointManager;
+    private final EndpointManager rabbitEndpointManager;
 
     @Override
-    public Node create(MockConfig mockConfig, NodeConfig nodeConfig) {
-        String receiverName = nodeConfig.getParameter(ReceiverTriggerNode.PARAMETER_RECEIVER_NAME)
-                .orElseThrow(() -> new RuntimeException(ReceiverTriggerNode.PARAMETER_RECEIVER_NAME + " is required"));
+    public void register(ReceiverTriggerNode receiver) {
+        switch (receiver.getReceiverConfig().getParameter("type").orElse("")) {
+            case "jms":
+            default:
+                jmsEndpointManager.register(receiver);
+                break;
+            case "rabbit":
+                rabbitEndpointManager.register(receiver);
+                break;
+        }
+    }
 
-        ReceiverConfig receiverConfig = receiverConfigService.findByName(receiverName)
-                .orElseThrow(() -> new RuntimeException(receiverName + " does not exist"));
-
-        ReceiverTriggerNode receiver = new ReceiverTriggerNode(nodeConfig, receiverConfig, eventService);
-
-        endpointManager.register(receiver);
-
-        return receiver;
+    @Override
+    public void unregister(ReceiverTriggerNode receiver) {
+        switch (receiver.getReceiverConfig().getParameter("type").orElse("")) {
+            case "jms":
+            default:
+                jmsEndpointManager.unregister(receiver);
+                break;
+            case "rabbit":
+                rabbitEndpointManager.unregister(receiver);
+                break;
+        }
     }
 
 }

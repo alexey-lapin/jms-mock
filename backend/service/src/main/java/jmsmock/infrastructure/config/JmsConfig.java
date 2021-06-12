@@ -40,7 +40,7 @@ import javax.jms.ConnectionFactory;
 public class JmsConfig {
 
     @Bean
-    MessageConverter messagingMessageConverter() {
+    MessageConverter jmsMessagingMessageConverter() {
         return new MessagingMessageConverter();
     }
 
