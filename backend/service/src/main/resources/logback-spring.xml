@@ -16,5 +16,6 @@
     </root>
 
 <!--    <logger name="org.zalando.logbook" level="trace"/>-->
+<!--    <logger name="org.springframework.boot.autoconfigure.logging.ConditionEvaluationReportLoggingListener" level="debug"/>-->
 
 </configuration>

@@ -20,6 +20,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-activemq")
     implementation("org.springframework.boot:spring-boot-starter-artemis")
 
+    implementation("org.springframework.boot:spring-boot-starter-amqp")
+
     implementation("com.github.jknack:handlebars:4.2.0")
     implementation("com.jayway.jsonpath:json-path")
     implementation("io.projectreactor:reactor-core:3.4.5")

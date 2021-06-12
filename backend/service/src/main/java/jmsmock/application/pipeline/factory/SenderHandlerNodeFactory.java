@@ -31,6 +31,7 @@ import jmsmock.domain.model.SenderConfig;
 import jmsmock.service.EventService;
 import jmsmock.service.config.SenderConfigService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.amqp.rabbit.core.RabbitOperations;
 import org.springframework.jms.core.JmsOperations;
 import org.springframework.stereotype.Component;
 
@@ -43,6 +44,7 @@ public class SenderHandlerNodeFactory implements NodeFactory {
     private final SenderConfigService senderConfigService;
 
     private final JmsOperations jmsOperations;
+    private final RabbitOperations rabbitOperations;
 
     @Override
     public Node create(MockConfig mockConfig, NodeConfig nodeConfig) {
@@ -53,8 +55,9 @@ public class SenderHandlerNodeFactory implements NodeFactory {
                 .orElseThrow(() -> new RuntimeException(senderName + " does not exist"));
 
         String destination = senderConfig.getDestination();
+        String type = senderConfig.getParameter("type").orElse(null);
 
-        return new SenderHandlerNode(nodeConfig, eventService, jmsOperations, destination);
+        return new SenderHandlerNode(nodeConfig, eventService, jmsOperations, rabbitOperations, type, destination);
     }
 
 }
