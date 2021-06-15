@@ -21,39 +21,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package jmsmock.application.pipeline;
+package jmsmock.infrastructure.endpoint.noop;
 
-import jmsmock.application.mock.Mock;
+import jmsmock.infrastructure.endpoint.DestinationBrowser;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.Message;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.Collections;
+import java.util.List;
 
-public class Context {
+@Slf4j
+public class NoopDestinationBrowser implements DestinationBrowser {
 
-    public static final AttributeKey<Mock> MOCK = AttributeKey.of("mock");
-    public static final AttributeKey<Message<String>> INBOUND_MESSAGE = AttributeKey.of("inbound-message");
-    public static final AttributeKey<Message<String>> OUTBOUND_MESSAGE = AttributeKey.of("outbound-message");
-    public static final AttributeKey<String> DESTINATION = AttributeKey.of("destination");
-    public static final AttributeKey<String> EXCHANGE = AttributeKey.of("exchange");
-    public static final AttributeKey<String> ROUTING_KEY = AttributeKey.of("routing-key");
-
-    private final Map<AttributeKey<?>, Object> map = new HashMap<>();
-
-    public <T> Context setAttribute(AttributeKey<T> key, T value) {
-        map.put(key, value);
-        return this;
+    @Override
+    public List<Message<String>> browse(String name) {
+        log.warn("noop browse");
+        return Collections.emptyList();
     }
 
-    public <T> Context setAttributeIfAbsent(AttributeKey<T> key, T value) {
-        map.putIfAbsent(key, value);
-        return this;
+    @Override
+    public int count(String name) {
+        log.warn("noop count");
+        return 0;
     }
 
-    @SuppressWarnings("unchecked")
-    public <T> Optional<T> getAttribute(AttributeKey<T> key) {
-        return Optional.ofNullable((T) map.get(key));
+    @Override
+    public void purge(String name) {
+        log.warn("noop purge");
     }
 
 }

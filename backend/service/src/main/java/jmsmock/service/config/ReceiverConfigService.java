@@ -23,12 +23,11 @@
  */
 package jmsmock.service.config;
 
-import jmsmock.domain.model.MockConfig;
-import jmsmock.domain.model.ReceiverConfig;
-import jmsmock.domain.model.ParametrizedConfig;
-import jmsmock.domain.repository.ReceiverConfigRepository;
 import jmsmock.application.mock.Mock;
-import jmsmock.service.JmsListenerService;
+import jmsmock.domain.model.MockConfig;
+import jmsmock.domain.model.ParametrizedConfig;
+import jmsmock.domain.model.ReceiverConfig;
+import jmsmock.domain.repository.ReceiverConfigRepository;
 import jmsmock.service.MockManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Lazy;
@@ -50,8 +49,6 @@ import java.util.stream.Collectors;
 public class ReceiverConfigService {
 
     private final ReceiverConfigRepository repository;
-
-    private final JmsListenerService jmsListenerService;
 
     @Lazy
     private final MockManager mockManager;

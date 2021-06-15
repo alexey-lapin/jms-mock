@@ -23,17 +23,62 @@
  */
 package jmsmock.infrastructure.config;
 
+import jmsmock.infrastructure.endpoint.EndpointManager;
+import jmsmock.infrastructure.endpoint.SenderOperations;
+import jmsmock.infrastructure.endpoint.noop.NoopEndpointManager;
+import jmsmock.infrastructure.endpoint.noop.NoopSenderOperations;
+import jmsmock.infrastructure.endpoint.rabbit.RabbitEndpointManager;
+import jmsmock.infrastructure.endpoint.rabbit.RabbitSenderOperations;
+import org.springframework.amqp.rabbit.core.RabbitOperations;
+import org.springframework.amqp.rabbit.listener.RabbitListenerContainerFactory;
+import org.springframework.amqp.rabbit.listener.RabbitListenerEndpointRegistry;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.amqp.support.converter.MessagingMessageConverter;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-@Configuration
 public class RabbitConfig {
 
-    @Bean
-    MessageConverter rabbitMessagingMessageConverter() {
-        return new MessagingMessageConverter();
+    @ConditionalOnProperty(name = "app.rabbit.enabled", havingValue = "true")
+    @Configuration
+    static class Enabled {
+
+        @Bean
+        EndpointManager rabbitEndpointManager(RabbitListenerContainerFactory<?> rabbitListenerContainerFactory,
+                                              RabbitListenerEndpointRegistry rabbitListenerEndpointRegistry,
+                                              MessageConverter messageConverter) {
+            return new RabbitEndpointManager(rabbitListenerContainerFactory,
+                    rabbitListenerEndpointRegistry,
+                    messageConverter);
+        }
+
+        @Bean
+        SenderOperations rabbitSenderOperations(RabbitOperations rabbitOperations) {
+            return new RabbitSenderOperations(rabbitOperations);
+        }
+
+        @Bean
+        MessageConverter rabbitMessagingMessageConverter() {
+            return new MessagingMessageConverter();
+        }
+
+    }
+
+    @ConditionalOnProperty(name = "app.rabbit.enabled", havingValue = "false", matchIfMissing = true)
+    @Configuration
+    static class Disabled {
+
+        @Bean
+        EndpointManager rabbitEndpointManager() {
+            return new NoopEndpointManager();
+        }
+
+        @Bean
+        SenderOperations rabbitSenderOperations() {
+            return new NoopSenderOperations();
+        }
+
     }
 
 }

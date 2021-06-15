@@ -21,39 +21,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package jmsmock.application.pipeline;
+package jmsmock.infrastructure.endpoint.composite;
 
-import jmsmock.application.mock.Mock;
+import jmsmock.infrastructure.endpoint.DestinationBrowser;
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Primary;
 import org.springframework.messaging.Message;
+import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.List;
 
-public class Context {
+@RequiredArgsConstructor
+@Primary
+@Component
+public class CompositeDestinationBrowser implements DestinationBrowser {
 
-    public static final AttributeKey<Mock> MOCK = AttributeKey.of("mock");
-    public static final AttributeKey<Message<String>> INBOUND_MESSAGE = AttributeKey.of("inbound-message");
-    public static final AttributeKey<Message<String>> OUTBOUND_MESSAGE = AttributeKey.of("outbound-message");
-    public static final AttributeKey<String> DESTINATION = AttributeKey.of("destination");
-    public static final AttributeKey<String> EXCHANGE = AttributeKey.of("exchange");
-    public static final AttributeKey<String> ROUTING_KEY = AttributeKey.of("routing-key");
+    private final DestinationBrowser jmsDestinationBrowser;
 
-    private final Map<AttributeKey<?>, Object> map = new HashMap<>();
-
-    public <T> Context setAttribute(AttributeKey<T> key, T value) {
-        map.put(key, value);
-        return this;
+    @Override
+    public List<Message<String>> browse(String name) {
+        return jmsDestinationBrowser.browse(name);
     }
 
-    public <T> Context setAttributeIfAbsent(AttributeKey<T> key, T value) {
-        map.putIfAbsent(key, value);
-        return this;
+    @Override
+    public int count(String name) {
+        return jmsDestinationBrowser.count(name);
     }
 
-    @SuppressWarnings("unchecked")
-    public <T> Optional<T> getAttribute(AttributeKey<T> key) {
-        return Optional.ofNullable((T) map.get(key));
+    @Override
+    public void purge(String name) {
+        jmsDestinationBrowser.purge(name);
     }
 
 }

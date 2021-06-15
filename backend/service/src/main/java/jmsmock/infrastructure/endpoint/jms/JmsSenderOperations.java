@@ -21,17 +21,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package jmsmock.infrastructure.endpoint;
+package jmsmock.infrastructure.endpoint.jms;
 
-import jmsmock.application.pipeline.impl.ReceiverTriggerNode;
-import jmsmock.domain.model.ReceiverConfig;
+import jmsmock.application.pipeline.Context;
+import jmsmock.infrastructure.endpoint.SenderOperations;
+import lombok.RequiredArgsConstructor;
+import org.springframework.jms.core.JmsOperations;
+import org.springframework.messaging.Message;
 
-public interface EndpointManager {
+@RequiredArgsConstructor
+public class JmsSenderOperations implements SenderOperations {
 
-    void register(ReceiverTriggerNode receiver);
+    private final JmsOperations jmsOperations;
 
-    void unregister(ReceiverTriggerNode receiver);
-
-    void toggle(ReceiverConfig receiverConfig);
+    @Override
+    public void send(Message<?> message, Context context) {
+        String destination = context.getAttribute(Context.DESTINATION).orElse(null);
+        jmsOperations.convertAndSend(destination, message);
+    }
 
 }

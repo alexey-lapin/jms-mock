@@ -28,16 +28,17 @@ import jmsmock.application.pipeline.impl.ReceiverTriggerNode;
 import jmsmock.domain.model.ReceiverConfig;
 import jmsmock.infrastructure.endpoint.EndpointManager;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.jms.config.JmsListenerContainerFactory;
 import org.springframework.jms.config.JmsListenerEndpointRegistry;
 import org.springframework.jms.config.SimpleJmsListenerEndpoint;
 import org.springframework.jms.listener.AbstractMessageListenerContainer;
 import org.springframework.jms.listener.MessageListenerContainer;
 import org.springframework.jms.support.converter.MessageConverter;
-import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
-@Component
+@Slf4j
+//@Component
 public class JmsEndpointManager implements EndpointManager {
 
     private final JmsListenerContainerFactory<?> listenerContainerFactory;
@@ -78,6 +79,23 @@ public class JmsEndpointManager implements EndpointManager {
             Object messageListener = ((AbstractMessageListenerContainer) listenerContainer).getMessageListener();
             if (messageListener instanceof JmsCompositeMessageListener) {
                 ((JmsCompositeMessageListener) messageListener).removeChild(wrap(receiver));
+            }
+        }
+    }
+
+    @Override
+    public void toggle(ReceiverConfig receiverConfig) {
+        String receiverName = receiverConfig.getName();
+        MessageListenerContainer listenerContainer = listenerEndpointRegistry.getListenerContainer(receiverName);
+        if (listenerContainer == null) {
+            log.warn("does not exist");
+        } else {
+            if (listenerContainer.isRunning()) {
+                log.info("stopping");
+                listenerContainer.stop();
+            } else {
+                log.info("starting");
+                listenerContainer.start();
             }
         }
     }

@@ -23,17 +23,20 @@
  */
 package jmsmock.application.pipeline.factory;
 
+import jmsmock.application.pipeline.Context;
+import jmsmock.application.pipeline.ContextConfigurer;
 import jmsmock.application.pipeline.Node;
 import jmsmock.application.pipeline.impl.SenderHandlerNode;
 import jmsmock.domain.model.MockConfig;
 import jmsmock.domain.model.NodeConfig;
 import jmsmock.domain.model.SenderConfig;
+import jmsmock.infrastructure.endpoint.SenderOperations;
 import jmsmock.service.EventService;
 import jmsmock.service.config.SenderConfigService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.amqp.rabbit.core.RabbitOperations;
-import org.springframework.jms.core.JmsOperations;
 import org.springframework.stereotype.Component;
+
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Component
@@ -43,8 +46,8 @@ public class SenderHandlerNodeFactory implements NodeFactory {
 
     private final SenderConfigService senderConfigService;
 
-    private final JmsOperations jmsOperations;
-    private final RabbitOperations rabbitOperations;
+    private final SenderOperations jmsSenderOperations;
+    private final SenderOperations rabbitSenderOperations;
 
     @Override
     public Node create(MockConfig mockConfig, NodeConfig nodeConfig) {
@@ -54,10 +57,33 @@ public class SenderHandlerNodeFactory implements NodeFactory {
         SenderConfig senderConfig = senderConfigService.findByName(senderName)
                 .orElseThrow(() -> new RuntimeException(senderName + " does not exist"));
 
-        String destination = senderConfig.getDestination();
-        String type = senderConfig.getParameter("type").orElse(null);
+        String type = senderConfig.getParameter("type").orElse("");
+        switch (type) {
+            case "jms":
+            default:
+                return jms(nodeConfig, senderConfig);
+            case "rabbit":
+                return rabbit(nodeConfig, senderConfig);
+        }
 
-        return new SenderHandlerNode(nodeConfig, eventService, jmsOperations, rabbitOperations, type, destination);
+    }
+
+    private Node jms(NodeConfig nodeConfig, SenderConfig senderConfig) {
+        String destination = senderConfig.getDestination();
+        ContextConfigurer contextConfigurer = context -> {
+            context.setAttributeIfAbsent(Context.DESTINATION, destination);
+        };
+        return new SenderHandlerNode(nodeConfig, eventService, jmsSenderOperations, contextConfigurer);
+    }
+
+    private Node rabbit(NodeConfig nodeConfig, SenderConfig senderConfig) {
+        Optional<String> exchange = senderConfig.getParameter("exchange");
+        Optional<String> routingKey = senderConfig.getParameter("routingKey");
+        ContextConfigurer contextConfigurer = context -> {
+            exchange.ifPresent(value -> context.setAttributeIfAbsent(Context.EXCHANGE, value));
+            routingKey.ifPresent(value -> context.setAttributeIfAbsent(Context.ROUTING_KEY, value));
+        };
+        return new SenderHandlerNode(nodeConfig, eventService, rabbitSenderOperations, contextConfigurer);
     }
 
 }

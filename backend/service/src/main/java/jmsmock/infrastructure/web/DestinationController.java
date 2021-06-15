@@ -23,11 +23,11 @@
  */
 package jmsmock.infrastructure.web;
 
-import jmsmock.api.dto.MessageDto;
 import jmsmock.api.dto.DestinationConfigDto;
+import jmsmock.api.dto.MessageDto;
 import jmsmock.api.operation.DestinationOperations;
 import jmsmock.domain.model.DestinationConfig;
-import jmsmock.service.DestinationBrowser;
+import jmsmock.infrastructure.endpoint.DestinationBrowser;
 import jmsmock.service.config.DestinationConfigService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.ConversionService;

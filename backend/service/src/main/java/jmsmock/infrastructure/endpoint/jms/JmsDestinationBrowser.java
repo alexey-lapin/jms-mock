@@ -21,14 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package jmsmock.service;
+package jmsmock.infrastructure.endpoint.jms;
 
+import jmsmock.infrastructure.endpoint.DestinationBrowser;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.jms.core.JmsOperations;
 import org.springframework.jms.support.converter.MessageConverter;
 import org.springframework.messaging.Message;
-import org.springframework.stereotype.Service;
 
 import javax.jms.JMSException;
 import javax.jms.QueueBrowser;
@@ -38,20 +38,22 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
-@Service
-public class DestinationBrowser {
+public class JmsDestinationBrowser implements DestinationBrowser {
 
-    private final MessageConverter messagingMessageConverter;
     private final JmsOperations jmsOperations;
+    private final MessageConverter messageConverter;
 
+    @Override
     public List<Message<String>> browse(String name) {
         return jmsOperations.browse(name, (session, browser) -> convertMessages(browser));
     }
 
+    @Override
     public int count(String name) {
         return jmsOperations.browse(name, (session, browser) -> getMessageList(browser).size());
     }
 
+    @Override
     public void purge(String name) {
         javax.jms.Message message = null;
         do {
@@ -74,7 +76,7 @@ public class DestinationBrowser {
     @SneakyThrows
     @SuppressWarnings("unchecked")
     private Message<String> convert(javax.jms.Message jmsMessage) {
-        Object object = messagingMessageConverter.fromMessage(jmsMessage);
+        Object object = messageConverter.fromMessage(jmsMessage);
         return (Message<String>) object;
     }
 

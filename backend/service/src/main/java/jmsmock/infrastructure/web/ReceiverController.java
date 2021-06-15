@@ -26,7 +26,7 @@ package jmsmock.infrastructure.web;
 import jmsmock.api.dto.ReceiverConfigDto;
 import jmsmock.api.operation.ReceiverOperations;
 import jmsmock.domain.model.ReceiverConfig;
-import jmsmock.service.JmsListenerService;
+import jmsmock.infrastructure.endpoint.EndpointManager;
 import jmsmock.service.config.ReceiverConfigService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.ConversionService;
@@ -42,10 +42,8 @@ import java.util.stream.Collectors;
 public class ReceiverController implements ReceiverOperations {
 
     private final ReceiverConfigService receiverConfigService;
-
     private final ConversionService conversionService;
-
-    private final JmsListenerService jmsListenerService;
+    private final EndpointManager endpointManager;
 
     @Override
     public List<ReceiverConfigDto> getAllReceivers() {
@@ -76,7 +74,7 @@ public class ReceiverController implements ReceiverOperations {
     @Override
     public ReceiverConfigDto toggleReceiver(String name) {
         ReceiverConfig result = receiverConfigService.toggle(name);
-        jmsListenerService.toggle(name);
+        endpointManager.toggle(result);
         return conversionService.convert(result, ReceiverConfigDto.class);
     }
 

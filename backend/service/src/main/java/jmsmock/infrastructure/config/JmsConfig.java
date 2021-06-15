@@ -23,11 +23,20 @@
  */
 package jmsmock.infrastructure.config;
 
-import com.ibm.mq.spring.boot.MQAutoConfiguration;
+import jmsmock.infrastructure.endpoint.DestinationBrowser;
+import jmsmock.infrastructure.endpoint.EndpointManager;
+import jmsmock.infrastructure.endpoint.noop.NoopDestinationBrowser;
+import jmsmock.infrastructure.endpoint.noop.NoopEndpointManager;
+import jmsmock.infrastructure.endpoint.noop.NoopSenderOperations;
+import jmsmock.infrastructure.endpoint.SenderOperations;
+import jmsmock.infrastructure.endpoint.jms.JmsDestinationBrowser;
+import jmsmock.infrastructure.endpoint.jms.JmsEndpointManager;
+import jmsmock.infrastructure.endpoint.jms.JmsSenderOperations;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
+import org.springframework.jms.config.JmsListenerContainerFactory;
+import org.springframework.jms.config.JmsListenerEndpointRegistry;
 import org.springframework.jms.core.JmsOperations;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.support.converter.MessageConverter;
@@ -36,36 +45,66 @@ import org.springframework.jms.support.destination.JmsDestinationAccessor;
 
 import javax.jms.ConnectionFactory;
 
-@Configuration
 public class JmsConfig {
 
-    @Bean
-    MessageConverter jmsMessagingMessageConverter() {
-        return new MessagingMessageConverter();
+    @ConditionalOnProperty(name = "app.jms.enabled", havingValue = "true")
+    @Configuration
+    static class Enabled {
+
+        @Bean
+        EndpointManager jmsEndpointManager(JmsListenerContainerFactory<?> jmsListenerContainerFactory,
+                                           JmsListenerEndpointRegistry jmsListenerEndpointRegistry,
+                                           MessageConverter messageConverter) {
+            return new JmsEndpointManager(jmsListenerContainerFactory,
+                    jmsListenerEndpointRegistry,
+                    messageConverter);
+        }
+
+        @Bean
+        SenderOperations jmsSenderOperations(JmsOperations jmsOperations) {
+            return new JmsSenderOperations(jmsOperations);
+        }
+
+        @Bean
+        DestinationBrowser jmsDestinationBrowser(JmsOperations jmsOperations, MessageConverter messageConverter) {
+            return new JmsDestinationBrowser(jmsOperations, messageConverter);
+        }
+
+        @Bean
+        MessageConverter jmsMessagingMessageConverter() {
+            return new MessagingMessageConverter();
+        }
+
+        @Bean
+        JmsOperations jmsTemplate(ConnectionFactory connectionFactory,
+                                  MessageConverter messagingMessageConverter) {
+            JmsTemplate jmsTemplate = new JmsTemplate(connectionFactory);
+            jmsTemplate.setMessageConverter(messagingMessageConverter);
+            jmsTemplate.setReceiveTimeout(JmsDestinationAccessor.RECEIVE_TIMEOUT_NO_WAIT);
+            return jmsTemplate;
+        }
+
     }
 
-    @Bean
-    JmsOperations jmsTemplate(ConnectionFactory connectionFactory,
-                              MessageConverter messagingMessageConverter) {
-        JmsTemplate jmsTemplate = new JmsTemplate(connectionFactory);
-        jmsTemplate.setMessageConverter(messagingMessageConverter);
-        jmsTemplate.setReceiveTimeout(JmsDestinationAccessor.RECEIVE_TIMEOUT_NO_WAIT);
-        return jmsTemplate;
-    }
+    @ConditionalOnProperty(name = "app.jms.enabled", havingValue = "false", matchIfMissing = true)
+    @Configuration
+    static class Disabled {
 
-    @ConditionalOnProperty(name = "app.jms", havingValue = "activemq", matchIfMissing = false)
-    @Import(ActiveMqConfiguration.class)
-    static class ActiveMqConfiguration {
-    }
+        @Bean
+        EndpointManager jmsEndpointManager() {
+            return new NoopEndpointManager();
+        }
 
-    @ConditionalOnProperty(name = "app.jms", havingValue = "artemis", matchIfMissing = false)
-    @Import(ActiveMqConfiguration.class)
-    static class ArtemisConfiguration {
-    }
+        @Bean
+        SenderOperations jmsSenderOperations() {
+            return new NoopSenderOperations();
+        }
 
-    @ConditionalOnProperty(name = "app.jms", havingValue = "ibm", matchIfMissing = false)
-    @Import(MQAutoConfiguration.class)
-    static class IbmMqConfiguration {
+        @Bean
+        DestinationBrowser jmsDestinationBrowser() {
+            return new NoopDestinationBrowser();
+        }
+
     }
 
 }

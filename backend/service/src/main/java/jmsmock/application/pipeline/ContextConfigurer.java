@@ -21,17 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package jmsmock.infrastructure.endpoint;
+package jmsmock.application.pipeline;
 
-import jmsmock.application.pipeline.impl.ReceiverTriggerNode;
-import jmsmock.domain.model.ReceiverConfig;
+public interface ContextConfigurer {
 
-public interface EndpointManager {
-
-    void register(ReceiverTriggerNode receiver);
-
-    void unregister(ReceiverTriggerNode receiver);
-
-    void toggle(ReceiverConfig receiverConfig);
+    void configure(Context context);
 
 }
