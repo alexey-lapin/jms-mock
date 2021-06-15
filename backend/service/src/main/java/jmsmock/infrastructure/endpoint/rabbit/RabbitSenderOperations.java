@@ -21,39 +21,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package jmsmock.application.pipeline;
+package jmsmock.infrastructure.endpoint.rabbit;
 
-import jmsmock.application.mock.Mock;
+import jmsmock.application.pipeline.Context;
+import jmsmock.infrastructure.endpoint.SenderOperations;
+import lombok.RequiredArgsConstructor;
+import org.springframework.amqp.rabbit.core.RabbitOperations;
 import org.springframework.messaging.Message;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
-public class Context {
+@RequiredArgsConstructor
+public class RabbitSenderOperations implements SenderOperations {
 
-    public static final AttributeKey<Mock> MOCK = AttributeKey.of("mock");
-    public static final AttributeKey<Message<String>> INBOUND_MESSAGE = AttributeKey.of("inbound-message");
-    public static final AttributeKey<Message<String>> OUTBOUND_MESSAGE = AttributeKey.of("outbound-message");
-    public static final AttributeKey<String> DESTINATION = AttributeKey.of("destination");
-    public static final AttributeKey<String> EXCHANGE = AttributeKey.of("exchange");
-    public static final AttributeKey<String> ROUTING_KEY = AttributeKey.of("routing-key");
+    private final RabbitOperations rabbitOperations;
 
-    private final Map<AttributeKey<?>, Object> map = new HashMap<>();
-
-    public <T> Context setAttribute(AttributeKey<T> key, T value) {
-        map.put(key, value);
-        return this;
-    }
-
-    public <T> Context setAttributeIfAbsent(AttributeKey<T> key, T value) {
-        map.putIfAbsent(key, value);
-        return this;
-    }
-
-    @SuppressWarnings("unchecked")
-    public <T> Optional<T> getAttribute(AttributeKey<T> key) {
-        return Optional.ofNullable((T) map.get(key));
+    @Override
+    public void send(Message<?> message, Context context) {
+        Optional<String> exchange = context.getAttribute(Context.EXCHANGE);
+        Optional<String> routingKey = context.getAttribute(Context.ROUTING_KEY);
+        if (routingKey.isPresent()) {
+            if (exchange.isPresent()) {
+                rabbitOperations.convertAndSend(exchange.get(), routingKey.get(), message);
+            } else {
+                rabbitOperations.convertAndSend(routingKey.get(), message);
+            }
+        } else {
+            rabbitOperations.convertAndSend(message);
+        }
     }
 
 }

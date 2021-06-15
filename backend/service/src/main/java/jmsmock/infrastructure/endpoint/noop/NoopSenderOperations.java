@@ -21,17 +21,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package jmsmock.infrastructure.endpoint;
+package jmsmock.infrastructure.endpoint.noop;
 
-import jmsmock.application.pipeline.impl.ReceiverTriggerNode;
-import jmsmock.domain.model.ReceiverConfig;
+import jmsmock.application.pipeline.Context;
+import jmsmock.infrastructure.endpoint.SenderOperations;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.messaging.Message;
 
-public interface EndpointManager {
+@Slf4j
+public class NoopSenderOperations implements SenderOperations {
 
-    void register(ReceiverTriggerNode receiver);
-
-    void unregister(ReceiverTriggerNode receiver);
-
-    void toggle(ReceiverConfig receiverConfig);
+    @Override
+    public void send(Message<?> message, Context context) {
+        log.warn("noop send");
+    }
 
 }

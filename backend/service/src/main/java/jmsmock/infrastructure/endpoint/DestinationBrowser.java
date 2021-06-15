@@ -23,15 +23,16 @@
  */
 package jmsmock.infrastructure.endpoint;
 
-import jmsmock.application.pipeline.impl.ReceiverTriggerNode;
-import jmsmock.domain.model.ReceiverConfig;
+import org.springframework.messaging.Message;
 
-public interface EndpointManager {
+import java.util.List;
 
-    void register(ReceiverTriggerNode receiver);
+public interface DestinationBrowser {
 
-    void unregister(ReceiverTriggerNode receiver);
+    List<Message<String>> browse(String name);
 
-    void toggle(ReceiverConfig receiverConfig);
+    int count(String name);
+
+    void purge(String name);
 
 }

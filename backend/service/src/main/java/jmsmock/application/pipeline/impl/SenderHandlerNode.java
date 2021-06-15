@@ -25,13 +25,13 @@ package jmsmock.application.pipeline.impl;
 
 import jmsmock.application.pipeline.AbstractNode;
 import jmsmock.application.pipeline.Context;
+import jmsmock.application.pipeline.ContextConfigurer;
 import jmsmock.application.pipeline.Handler;
 import jmsmock.domain.model.Event;
 import jmsmock.domain.model.NodeConfig;
+import jmsmock.infrastructure.endpoint.SenderOperations;
 import jmsmock.service.EventService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.rabbit.core.RabbitOperations;
-import org.springframework.jms.core.JmsOperations;
 import org.springframework.messaging.Message;
 import reactor.core.publisher.Flux;
 
@@ -43,26 +43,18 @@ public class SenderHandlerNode extends AbstractNode implements Handler {
     public static final String PARAMETER_SENDER_NAME = "sender-name";
 
     private final EventService eventService;
-
-    private final String type;
-
-    private final JmsOperations jmsOperations;
-    private final RabbitOperations rabbitOperations;
-
-    private final String destination;
+    private final SenderOperations senderOperations;
+    private final ContextConfigurer contextConfigurer;
 
     public SenderHandlerNode(NodeConfig nodeConfig,
                              EventService eventService,
-                             JmsOperations jmsOperations,
-                             RabbitOperations rabbitOperations,
-                             String type,
-                             String destination) {
+                             SenderOperations senderOperations,
+                             ContextConfigurer contextConfigurer
+    ) {
         super(nodeConfig);
         this.eventService = eventService;
-        this.jmsOperations = jmsOperations;
-        this.rabbitOperations = rabbitOperations;
-        this.type = type;
-        this.destination = destination;
+        this.senderOperations = senderOperations;
+        this.contextConfigurer = contextConfigurer;
     }
 
     @Override
@@ -72,13 +64,8 @@ public class SenderHandlerNode extends AbstractNode implements Handler {
             if (outboundMessage.isPresent()) {
                 try {
                     Message<String> outbound = outboundMessage.get();
-                    log.info(outbound.toString());
-                    if ("rabbit".equals(type)) {
-                        rabbitOperations.convertAndSend("exchange", "rkey", outbound);
-//                        rabbitOperations.convertAndSend(outbound);
-                    } else {
-                        jmsOperations.convertAndSend(destination, outbound);
-                    }
+                    contextConfigurer.configure(context);
+                    senderOperations.send(outbound, context);
                 } catch (Exception ex) {
                     log.error("failed to send message", ex);
                 }

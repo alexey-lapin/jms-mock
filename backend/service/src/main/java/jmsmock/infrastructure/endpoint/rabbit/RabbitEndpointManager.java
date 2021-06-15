@@ -28,16 +28,16 @@ import jmsmock.application.pipeline.impl.ReceiverTriggerNode;
 import jmsmock.domain.model.ReceiverConfig;
 import jmsmock.infrastructure.endpoint.EndpointManager;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerEndpoint;
 import org.springframework.amqp.rabbit.listener.AbstractMessageListenerContainer;
 import org.springframework.amqp.rabbit.listener.MessageListenerContainer;
 import org.springframework.amqp.rabbit.listener.RabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.listener.RabbitListenerEndpointRegistry;
 import org.springframework.amqp.support.converter.MessageConverter;
-import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
-@Component
+@Slf4j
 public class RabbitEndpointManager implements EndpointManager {
 
     private final RabbitListenerContainerFactory<?> listenerContainerFactory;
@@ -78,6 +78,23 @@ public class RabbitEndpointManager implements EndpointManager {
             Object messageListener = ((AbstractMessageListenerContainer) listenerContainer).getMessageListener();
             if (messageListener instanceof RabbitCompositeMessageListener) {
                 ((RabbitCompositeMessageListener) messageListener).removeChild(wrap(receiver));
+            }
+        }
+    }
+
+    @Override
+    public void toggle(ReceiverConfig receiverConfig) {
+        String receiverName = receiverConfig.getName();
+        MessageListenerContainer listenerContainer = listenerEndpointRegistry.getListenerContainer(receiverName);
+        if (listenerContainer == null) {
+            log.warn("does not exist");
+        } else {
+            if (listenerContainer.isRunning()) {
+                log.info("stopping");
+                listenerContainer.stop();
+            } else {
+                log.info("starting");
+                listenerContainer.start();
             }
         }
     }

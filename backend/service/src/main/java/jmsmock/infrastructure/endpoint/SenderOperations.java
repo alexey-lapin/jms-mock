@@ -23,15 +23,11 @@
  */
 package jmsmock.infrastructure.endpoint;
 
-import jmsmock.application.pipeline.impl.ReceiverTriggerNode;
-import jmsmock.domain.model.ReceiverConfig;
+import jmsmock.application.pipeline.Context;
+import org.springframework.messaging.Message;
 
-public interface EndpointManager {
+public interface SenderOperations {
 
-    void register(ReceiverTriggerNode receiver);
-
-    void unregister(ReceiverTriggerNode receiver);
-
-    void toggle(ReceiverConfig receiverConfig);
+    void send(Message<?> message, Context context);
 
 }

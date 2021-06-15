@@ -21,34 +21,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package jmsmock.service;
+package jmsmock.infrastructure.endpoint.noop;
 
-import lombok.RequiredArgsConstructor;
+import jmsmock.application.pipeline.impl.ReceiverTriggerNode;
+import jmsmock.domain.model.ReceiverConfig;
+import jmsmock.infrastructure.endpoint.EndpointManager;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.jms.config.JmsListenerEndpointRegistry;
-import org.springframework.jms.listener.MessageListenerContainer;
-import org.springframework.stereotype.Service;
 
-@RequiredArgsConstructor
 @Slf4j
-@Service
-public class JmsListenerService {
+public class NoopEndpointManager implements EndpointManager {
 
-    private final JmsListenerEndpointRegistry jmsListenerEndpointRegistry;
+    @Override
+    public void register(ReceiverTriggerNode receiver) {
+        log.warn("noop register");
+    }
 
-    public void toggle(String name) {
-        MessageListenerContainer listenerContainer = jmsListenerEndpointRegistry.getListenerContainer(name);
-        if (listenerContainer == null){
-            log.warn("does not exist");
-        } else {
-            if (listenerContainer.isRunning()) {
-                log.info("stopping");
-                listenerContainer.stop();
-            } else {
-                log.info("starting");
-                listenerContainer.start();
-            }
-        }
+    @Override
+    public void unregister(ReceiverTriggerNode receiver) {
+        log.warn("noop unregister");
+    }
+
+    @Override
+    public void toggle(ReceiverConfig receiverConfig) {
+        log.warn("noop toggle");
     }
 
 }

@@ -21,9 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package jmsmock.infrastructure.endpoint;
+package jmsmock.infrastructure.endpoint.composite;
 
 import jmsmock.application.pipeline.impl.ReceiverTriggerNode;
+import jmsmock.domain.model.ReceiverConfig;
+import jmsmock.infrastructure.endpoint.EndpointManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
@@ -58,6 +60,19 @@ public class CompositeEndpointManager implements EndpointManager {
                 break;
             case "rabbit":
                 rabbitEndpointManager.unregister(receiver);
+                break;
+        }
+    }
+
+    @Override
+    public void toggle(ReceiverConfig receiverConfig) {
+        switch (receiverConfig.getParameter("type").orElse("")) {
+            case "jms":
+            default:
+                jmsEndpointManager.toggle(receiverConfig);
+                break;
+            case "rabbit":
+                rabbitEndpointManager.toggle(receiverConfig);
                 break;
         }
     }

@@ -21,17 +21,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package jmsmock.infrastructure.endpoint;
+package jmsmock.infrastructure;
 
-import jmsmock.application.pipeline.impl.ReceiverTriggerNode;
-import jmsmock.domain.model.ReceiverConfig;
+import org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration;
 
-public interface EndpointManager {
+public class RabbitAutoConfigurationApplicationContextInitializer
+        extends AbstractConfigurationApplicationContextInitializer {
 
-    void register(ReceiverTriggerNode receiver);
+    @Override
+    protected String getFlagPropertyName() {
+        return "app.rabbit.enabled";
+    }
 
-    void unregister(ReceiverTriggerNode receiver);
+    @Override
+    protected String getHintPropertyName() {
+        return "spring.rabbitmq.host";
+    }
 
-    void toggle(ReceiverConfig receiverConfig);
+    @Override
+    protected Class<?> getAutoConfigurationClass() {
+        return RabbitAutoConfiguration.class;
+    }
 
 }
